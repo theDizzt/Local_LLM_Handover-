@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-llm-handover"
+version = "0.1.0"
+description = "Local AI based handover document generation and evaluation system"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.116,<1.0",
+    "jinja2>=3.1,<4.0",
+    "pydantic>=2.11,<3.0",
+    "uvicorn[standard]>=0.35,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.28,<1.0",
+    "pytest>=8.4,<9.0",
+    "ruff>=0.12,<1.0",
+]
+ocr = [
+    "pymupdf>=1.26,<2.0",
+]
+rag = [
+    "chromadb>=1.0,<2.0",
+    "sentence-transformers>=5.0,<6.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
