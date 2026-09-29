@@ -44,11 +44,11 @@ API → Services → Domain
 
 | 계층 | 책임 | 현재 상태 |
 |---|---|---|
-| `api` | 버전 API, 요청 검증, 응답 변환 | Health·Architecture·점수 비교 구현 |
-| `services` | 여러 도메인 규칙과 포트를 유스케이스로 조합 | 평가 비교 구현 |
+| `api` | 버전 API, 요청 검증, 응답 변환 | Health·Architecture·점수 비교·문서 등록/조회 구현 |
+| `services` | 여러 도메인 규칙과 포트를 유스케이스로 조합 | 평가 비교·문서 등록 구현 |
 | `domain` | 표준 JSON Schema, 점수 및 업무 분석 규칙 | 핵심 계약 구현 |
 | `ports` | LLM·Repository·Vector Store 계약 | Protocol 구현 |
-| `adapters` | SQLite·Ollama·ChromaDB·OCR 실제 연동 | SQLite 기반 구현 |
+| `adapters` | SQLite·Ollama·ChromaDB·OCR 실제 연동 | SQLite 문서 Repository·PDF 유효성 검사 구현 |
 
 도메인과 서비스는 Ollama, ChromaDB, PaddleOCR의 응답 객체를 직접 참조하지 않는다.
 외부 결과는 어댑터가 표준 Schema로 변환한다.
@@ -100,7 +100,7 @@ Provider 호출 전후의 모델 ID, Prompt·Schema 버전, 검색 근거 ID, �
 
 ## 단계별 구현 순서
 
-1. SQLite Repository와 문서 등록 트랜잭션을 완성한다.
+1. [완료] SQLite 문서 Repository와 문서 등록 트랜잭션, 목록·상세 API를 구현한다.
 2. PyMuPDF·PaddleOCR 어댑터와 Good/Medium/Poor 스캔 Fixture를 연결한다.
 3. Chunk 생성 및 ChromaDB 색인 상태 전이를 구현한다.
 4. Ollama Gateway와 역할별 Prompt·Schema 재시도 정책을 구현한다.

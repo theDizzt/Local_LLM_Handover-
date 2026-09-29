@@ -20,7 +20,7 @@ if not exist "%PYTHON_EXE%" (
     )
 )
 
-"%PYTHON_EXE%" -c "import fastapi, handover_ai" 2>nul
+"%PYTHON_EXE%" -c "import fastapi, handover_ai, pymupdf, multipart" 2>nul
 if errorlevel 1 (
     echo [SETUP] Installing project dependencies...
     "%PYTHON_EXE%" -m pip install -e ".[dev]"
@@ -47,4 +47,3 @@ if not "%EXIT_CODE%"=="0" (
 )
 
 exit /b %EXIT_CODE%
-
