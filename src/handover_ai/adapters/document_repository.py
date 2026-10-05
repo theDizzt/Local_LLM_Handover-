@@ -1,3 +1,6 @@
+# [읽기 안내] DocumentRepository 계약을 SQLite로 구현한다.
+# 서비스는 파일 처리 순서를 결정하고, 이 클래스는 DB 입력/조회와 트랜잭션을 책임진다.
+# SELECT 결과는 dict를 거쳐 Pydantic 모델로 변환하므로 DB 값도 도메인 계약을 통과한다.
 import sqlite3
 
 from handover_ai.adapters.sqlite import SQLiteDatabase
@@ -52,6 +55,7 @@ class SQLiteDocumentRepository:
             raise
 
     def get_document(self, document_id: str) -> StoredDocument | None:
+        # fetchone()은 첫 행 또는 None을 반환한다. 없는 문서는 예외 대신 None으로 표현한다.
         with self.database.connect() as connection:
             row = connection.execute(
                 DOCUMENT_SELECT + " WHERE d.document_id = ?", (document_id,)
@@ -59,6 +63,7 @@ class SQLiteDocumentRepository:
         return StoredDocument.model_validate(dict(row)) if row else None
 
     def get_by_hash(self, file_sha256: str) -> StoredDocument | None:
+        # 파일명이 달라도 내용이 같으면 같은 SHA-256이 나온다. 최신 문서 버전을 우선한다.
         with self.database.connect() as connection:
             row = connection.execute(
                 DOCUMENT_SELECT
@@ -68,6 +73,7 @@ class SQLiteDocumentRepository:
         return StoredDocument.model_validate(dict(row)) if row else None
 
     def list_documents(self, limit: int, offset: int) -> list[StoredDocument]:
+        # 생성 시각이 같은 경우에도 document_id로 순서를 고정해 페이지 경계가 흔들리지 않는다.
         with self.database.connect() as connection:
             rows = connection.execute(
                 DOCUMENT_SELECT + " ORDER BY d.created_at DESC, d.document_id LIMIT ? OFFSET ?",

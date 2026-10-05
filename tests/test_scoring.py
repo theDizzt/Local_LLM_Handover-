@@ -1,3 +1,5 @@
+# [읽기 안내] 점수 환산·판정 경계·업무 영향도·기술 적합도를 숫자 예제로 확인한다.
+# 79.99 같은 경계값과 중복 기준을 포함해 '그럴듯한 잘못된 점수'가 나오지 않도록 한다.
 import unittest
 
 from handover_ai.domain.models import CriterionScore, EvaluationLabel

@@ -1,3 +1,5 @@
+# [읽기 안내] JSON에 올바른 근거 ID가 있으면 모델 생성이 성공하고,
+# 없는 ID를 참조하면 ValidationError가 발생하는지 확인한다. 실제 DB 근거 검사는 아니다.
 import unittest
 
 from pydantic import ValidationError

@@ -1,3 +1,5 @@
+# [읽기 안내] 시스템 확인 API다. /health는 DB 연결을 확인하고,
+# /architecture는 설계 정보를 알려준다. 후자는 외부 모델이 준비됐다는 뜻이 아니다.
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -16,6 +18,7 @@ def health(
     settings: SettingsDependency,
     database: DatabaseDependency,
 ):
+    # 설정과 DB는 Depends를 통해 들어오므로 테스트 DB로 쉽게 바꿀 수 있다.
     return {
         "status": "ready",
         "service": settings.app_name,

@@ -1,5 +1,8 @@
 @echo off
+rem Learning note: move to this script's folder, prepare venv, then start the API.
+rem OCR models are optional; install .[ocr] separately before requesting OCR.
 setlocal
+rem setlocal keeps the variables below from changing the caller's environment.
 
 cd /d "%~dp0"
 
@@ -9,6 +12,7 @@ set "HOST=127.0.0.1"
 set "PORT=8000"
 
 if not exist "%PYTHON_EXE%" (
+    rem Try Python 3.12 first, then let the launcher choose an installed version.
     echo [SETUP] Creating the Python virtual environment...
     py -3.12 -m venv "%VENV_DIR%" 2>nul
     if errorlevel 1 py -m venv "%VENV_DIR%" 2>nul

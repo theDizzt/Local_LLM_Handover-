@@ -1,3 +1,6 @@
+# [읽기 안내] 정상 업로드뿐 아니라 중복·재시작·동시 요청·저장 실패를 검증한다.
+# pytest의 settings fixture는 테스트마다 격리된 임시 폴더와 DB를 만든다.
+# assert는 기대 결과이며 monkeypatch/트리거는 실제로 발생하기 어려운 실패를 재현한다.
 import hashlib
 import io
 import sqlite3

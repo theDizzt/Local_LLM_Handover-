@@ -1,3 +1,5 @@
+# [읽기 안내] 스키마 초기화의 반복 실행, 실행 이력 저장, 문서 계층 무결성을 검증한다.
+# unittest.TestCase도 pytest가 발견해 실행하므로 전체 테스트는 pytest 명령으로 실행한다.
 import sqlite3
 import tempfile
 import unittest

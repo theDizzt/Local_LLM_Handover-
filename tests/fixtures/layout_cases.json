@@ -1,0 +1,78 @@
+[
+  {
+    "name": "heading_and_body",
+    "blocks": [
+      ["title", "업무 인수인계 안내", [0.1, 0.05, 0.7, 0.11]],
+      ["body1", "매일 오전 서버 상태를 확인하고 결과를 기록한다.", [0.1, 0.2, 0.9, 0.22]],
+      ["body2", "오류가 발생하면 담당자에게 연락하고 원인을 확인한다.", [0.1, 0.25, 0.9, 0.27]],
+      ["body3", "복구가 끝나면 업무 일지에 처리 내용을 남긴다.", [0.1, 0.3, 0.9, 0.32]]
+    ],
+    "expected_order": ["title", "body1", "body2", "body3"],
+    "expected_kinds": {"title": "heading", "body1": "paragraph", "body2": "paragraph", "body3": "paragraph"},
+    "expected_reasons": ["heading_candidate"]
+  },
+  {
+    "name": "two_columns_with_spanning_heading_and_footer",
+    "blocks": [
+      ["title", "운영 업무와 장애 대응", [0.05, 0.05, 0.95, 0.11]],
+      ["left1", "매일 오전 서버의 상태를 확인하고 점검 결과를 업무 일지에 기록한다.", [0.05, 0.2, 0.44, 0.22]],
+      ["right1", "장애가 발생하면 담당자에게 연락하고 영향을 받는 업무를 먼저 확인한다.", [0.56, 0.2, 0.95, 0.22]],
+      ["left2", "백업 파일의 생성 시각과 크기를 확인하고 이상이 있으면 담당자에게 알린다.", [0.05, 0.25, 0.44, 0.27]],
+      ["right2", "복구 절차를 실행하기 전에 현재 상태와 오류 메시지를 기록하여 보관한다.", [0.56, 0.25, 0.95, 0.27]],
+      ["left3", "주간 점검이 끝나면 처리 결과와 남은 문제를 다음 담당자에게 전달한다.", [0.05, 0.3, 0.44, 0.32]],
+      ["right3", "복구가 완료되면 서비스 동작을 확인하고 관련 부서에 정상화를 안내한다.", [0.56, 0.3, 0.95, 0.32]],
+      ["footer", "위 절차는 업무 환경에 맞게 검토하여 적용한다.", [0.05, 0.5, 0.95, 0.52]]
+    ],
+    "expected_order": ["title", "left1", "left2", "left3", "right1", "right2", "right3", "footer"],
+    "expected_kinds": {"title": "heading", "left1": "paragraph", "right1": "paragraph", "footer": "paragraph"},
+    "expected_reasons": ["column_order_candidate"]
+  },
+  {
+    "name": "three_column_table_candidate",
+    "blocks": [
+      ["h1", "점검 항목", [0.1, 0.2, 0.27, 0.22]],
+      ["h2", "주기", [0.4, 0.2, 0.53, 0.22]],
+      ["h3", "기준", [0.7, 0.2, 0.85, 0.22]],
+      ["a1", "서버 상태", [0.1, 0.25, 0.27, 0.27]],
+      ["a2", "매일", [0.4, 0.25, 0.53, 0.27]],
+      ["a3", "09:30", [0.7, 0.25, 0.85, 0.27]],
+      ["b1", "백업 확인", [0.1, 0.3, 0.27, 0.32]],
+      ["b2", "매주", [0.4, 0.3, 0.53, 0.32]],
+      ["b3", "30일", [0.7, 0.3, 0.85, 0.32]]
+    ],
+    "expected_order": ["h1", "h2", "h3", "a1", "a2", "a3", "b1", "b2", "b3"],
+    "expected_kinds": {"h1": "table_candidate", "b3": "table_candidate"},
+    "expected_reasons": ["table_cells_unverified"]
+  },
+  {
+    "name": "short_two_columns_ambiguous_preserve_ocr",
+    "blocks": [
+      ["a1", "담당 부서", [0.1, 0.2, 0.3, 0.22]],
+      ["a2", "운영팀", [0.1, 0.25, 0.3, 0.27]],
+      ["a3", "지원팀", [0.1, 0.3, 0.3, 0.32]],
+      ["b1", "연락처", [0.6, 0.2, 0.8, 0.22]],
+      ["b2", "내선 1234", [0.6, 0.25, 0.8, 0.27]],
+      ["b3", "내선 5678", [0.6, 0.3, 0.8, 0.32]]
+    ],
+    "expected_order": ["a1", "a2", "a3", "b1", "b2", "b3"],
+    "expected_kinds": {"a1": "unknown", "b3": "unknown"},
+    "expected_reasons": ["table_or_columns"]
+  },
+  {
+    "name": "overlapping_ocr_preserve_original",
+    "blocks": [
+      ["b", "겹쳐 인식된 두 번째 문장", [0.15, 0.21, 0.65, 0.24]],
+      ["a", "겹쳐 인식된 첫 번째 문장", [0.1, 0.2, 0.6, 0.23]]
+    ],
+    "expected_order": ["b", "a"],
+    "expected_kinds": {"a": "unknown", "b": "unknown"},
+    "expected_reasons": ["overlapping_boxes"]
+  },
+  {
+    "name": "empty_page",
+    "blocks": [],
+    "expected_order": [],
+    "expected_kinds": {},
+    "expected_reasons": ["empty_page"]
+  }
+]

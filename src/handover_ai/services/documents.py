@@ -1,3 +1,6 @@
+# [읽기 안내] 한 번의 PDF 등록을 끝까지 조정하는 유스케이스다.
+# 파일 복사 → PDF 검사 → 중복 조회 → 최종 파일 이동 → DB 저장 순서로 읽으면 된다.
+# finally는 성공/중복/실패 어느 경로에서도 실행된다. committed가 파일 보존 여부를 결정한다.
 import hashlib
 from datetime import UTC, datetime
 from pathlib import Path
@@ -25,6 +28,8 @@ class DocumentService:
         store_path: Path,
         max_upload_bytes: int,
     ):
+        # Protocol 타입을 받아 SQLite/PyMuPDF 세부 구현을 몰라도 동작하게 한다.
+        # resolve()는 상대 경로를 절대 경로로 고정하여 작업 디렉터리 변경 영향을 줄인다.
         self.repository = repository
         self.inspector = inspector
         self.store_path = store_path.resolve()
@@ -74,6 +79,7 @@ class DocumentService:
                 return self._result(existing, duplicate=True)
 
             document_id = f"DOC-{uuid4().hex}"
+            # ID는 사용자가 지정하지 않는다. 파일 이름 충돌과 경로 조작을 피한다.
             final_path = self.store_path / f"{document_id}.pdf"
             document = StoredDocument(
                 document_id=document_id,
@@ -87,6 +93,8 @@ class DocumentService:
                 created_at=datetime.now(UTC).isoformat(),
             )
             temporary_path.replace(final_path)
+            # 파일이 최종 위치에 존재한 뒤에만 DB를 기록한다. 반대로 하면
+            # DB에는 등록되어 있지만 파일 이동이 실패한 문서가 남을 수 있다.
             try:
                 self.repository.save_document(document)
             except DuplicateDocument:

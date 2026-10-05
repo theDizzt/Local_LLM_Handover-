@@ -1,3 +1,5 @@
+# [읽기 안내] TestClient는 실제 포트를 열지 않고 FastAPI 요청/응답을 검증한다.
+# 임시 DB를 주입해 개발 데이터에 영향을 주지 않으며 with를 통해 앱 lifespan도 실행한다.
 import tempfile
 from pathlib import Path
 

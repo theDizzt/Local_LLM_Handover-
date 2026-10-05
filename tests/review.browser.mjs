@@ -1,0 +1,175 @@
+// [읽기 안내] 실제 브라우저에서 등록→진행→재진입→원문 비교→실패/재시도를 검증한다.
+// tests/review_server.py를 먼저 실행한다. Playwright 설치 위치는 환경 변수로 주입 가능하다.
+import assert from "node:assert/strict";
+import { mkdir } from "node:fs/promises";
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || "playwright");
+const browser = await chromium.launch({ headless: true, channel: process.env.BROWSER_CHANNEL || "msedge" });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
+const errors = [];
+page.on("pageerror", (error) => errors.push(error.message));
+const base = process.env.REVIEW_URL || "http://127.0.0.1:8765";
+const pdf = process.env.REVIEW_PDF || "data/ocr-review-korean-20261003/synthetic-korean.pdf";
+async function contains(selector, text) {
+  await page.waitForFunction(({ selector, text }) => document.querySelector(selector)?.textContent.includes(text), { selector, text });
+}
+async function upload() {
+  await page.locator("#pdf-file").setInputFiles(pdf);
+  await page.locator("#upload-button").click();
+}
+try {
+  await page.goto(base);
+  await contains("#documents", "등록된 문서가 없습니다");
+  await upload();
+  await contains("#notice", "문서를 등록했습니다");
+  await page.locator("#start-ocr").click();
+  await contains("#job-status", "대기 중");
+  await page.reload();
+  await contains("#job-status", "OCR 완료");
+  await page.locator("#page-image").waitFor({ state: "visible" });
+  assert.match(await page.locator("#original-image").getAttribute("href"), /\/pages\/PAGE-.*\/image$/);
+  assert.equal(await page.locator(".block").count(), 3);
+  // 원문을 HTML로 해석하지 않는지와 키보드로 좌표를 선택할 수 있는지 함께 확인한다.
+  assert.equal(await page.locator("#blocks img").count(), 0);
+  await page.locator(".block").first().focus();
+  await page.keyboard.press("Enter");
+  assert.equal(await page.locator(".highlight").count(), 1);
+  await page.locator("#low-only").check();
+  assert.equal(await page.locator(".block").count(), 1);
+  await contains("#blocks", "65.0%");
+  await page.locator("#low-only").uncheck();
+  await page.locator("#build-structure").click();
+  await contains("#structure-status", "근거 3개 준비됨");
+  const selectedDocument = new URL(page.url()).searchParams.get("document");
+  const chunkUrl = `${base}/api/v1/documents/${selectedDocument}/chunks`;
+  const initialChunks = await (await page.request.get(chunkUrl)).json();
+  await page.locator(".chunk").first().click();
+  assert.equal(await page.locator(".highlight").count(), 3);
+  assert.equal(await page.locator("#chunks img").count(), 0);
+  await page.reload();
+  await contains("#structure-status", "근거 3개 준비됨");
+  await page.locator("#page-next").click();
+  await contains("#page-label", "2 / 3");
+  await contains("#blocks", "2페이지");
+  await contains("#chunks", "2페이지 업무 인수인계");
+  await upload();
+  await contains("#notice", "동일한 파일");
+  assert.equal(await page.locator(".doc").count(), 1);
+  await page.request.post(`${base}/__test/failure/true`);
+  await page.locator("#start-ocr").click();
+  await contains("#job-status", "문서 처리에 실패했습니다");
+  await contains("#job-status", "이전에 성공한 결과");
+  await page.locator("#page-image").waitFor({ state: "visible" });
+  await contains("#structure-status", "근거 3개 준비됨");
+  await page.request.post(`${base}/__test/failure/false`);
+  await page.locator("#start-ocr").click();
+  await contains("#job-status", "OCR 완료");
+  await page.locator("#page-image").waitFor({ state: "visible" });
+  await contains("#structure-status", "근거가 아직 없습니다");
+  assert.equal((await (await page.request.get(chunkUrl)).json()).length, 0);
+  const historical = await (await page.request.get(`${chunkUrl}/${initialChunks[0].chunk_id}`)).json();
+  assert.deepEqual(historical.evidence, initialChunks[0].evidence);
+  await page.locator("#build-structure").click();
+  await contains("#structure-status", "근거 3개 준비됨");
+  await mkdir("data/review-browser", { recursive: true });
+  // 배치 분석과 기존 페이지 방식은 별도 버전이다. 전환/새로고침해도 양쪽 근거를 보존한다.
+  const baselineChunks = await (await page.request.get(chunkUrl)).json();
+  await page.locator("#layout-mode").selectOption("geometry");
+  await contains("#structure-status", "근거가 아직 없습니다");
+  await page.locator("#build-structure").click();
+  await contains("#structure-status", "검토 필요 3페이지");
+  await contains("#layout-warning", "좌표 규칙에 따른 제안");
+  await contains("#layout-warning", "낮은 OCR 신뢰도");
+  await contains("#human-review-status", "미검토");
+  await page.locator("#review-confirm").click();
+  await contains("#human-review-status", "세 가지 원문 대조 항목");
+  await page.locator("#review-note").fill("전화번호 재확인 <img src=x onerror=alert(1)>");
+  await page.locator("#review-correct").click();
+  await contains("#human-review-status", "수정 필요 · 기록 1");
+  for (const key of ["text", "order", "regions"]) await page.locator(`#review-${key}`).check();
+  await page.locator("#review-note").fill("원문 대조 완료");
+  await page.locator("#review-confirm").click();
+  await contains("#human-review-status", "검토 완료 · 기록 2");
+  await contains("#review-summary", "검토 완료 1");
+  assert.equal(await page.locator("#review-history img").count(), 0);
+  assert.equal(await page.locator(".layout-region").count(), 3);
+  await page.locator(".layout-region").first().click();
+  assert.equal(await page.locator(".highlight").count(), 1);
+  assert.equal(await page.locator("#chunks img").count(), 0);
+  await page.reload();
+  await contains("#structure-status", "검토 필요 3페이지");
+  await contains("#human-review-status", "검토 완료 · 기록 2");
+  await page.locator("#page-next").click();
+  await contains("#human-review-status", "미검토 · 기록 0");
+  assert.equal(await page.locator("#review-note").inputValue(), "");
+  await page.locator("#page-prev").click();
+  await contains("#human-review-status", "검토 완료 · 기록 2");
+  assert.equal(await page.locator("#layout-mode").inputValue(), "geometry");
+  await page.locator("#layout-mode").selectOption("page");
+  await contains("#structure-status", "근거 3개 준비됨");
+  assert.equal(await page.locator("#layout-panel").isVisible(), false);
+  assert.deepEqual(await (await page.request.get(chunkUrl)).json(), baselineChunks);
+  await page.locator("#layout-mode").selectOption("geometry");
+  await contains("#structure-status", "검토 필요 3페이지");
+  await page.screenshot({ path: "data/review-browser/desktop.png", fullPage: true });
+  // 실제 로컬 E5 + Chroma를 연결하여 검색, 페이지 이동, 원문 좌표를 확인한다.
+  await page.locator("#build-index").click();
+  await contains("#index-status", "검색 준비 완료");
+  await page.locator("#search-query").fill("전화번호 확인");
+  await page.locator("#search-submit").click();
+  await contains("#search-results", "전화번호");
+  await contains("#search-results", "사람 검토: 검토 완료");
+  assert.equal(await page.locator("#search-results img").count(), 0);
+  await page.locator("#search-results .chunk").first().click();
+  await page.waitForFunction(() => document.querySelectorAll(".highlight").length > 0);
+  await page.reload();
+  await contains("#index-status", "검색 준비 완료");
+  await page.locator("#layout-mode").selectOption("page");
+  await contains("#index-status", "검색 색인을 준비해 주세요");
+  assert.equal(await page.locator("#search-submit").isDisabled(), true);
+  await page.locator("#layout-mode").selectOption("geometry");
+  await contains("#index-status", "검색 준비 완료");
+  await page.locator("#search-query").fill("전화번호 확인");
+  await page.locator("#search-submit").click();
+  await contains("#search-results", "전화번호");
+  await page.screenshot({ path: "data/review-browser/search-desktop.png", fullPage: true });
+  // 재구축된 이전 컬렉션만 선택 삭제하고 현재 검색과 근거 조회는 계속 가능해야 한다.
+  await page.locator("#build-index").click();
+  await page.waitForFunction(() => !document.getElementById("build-index").disabled &&
+    document.getElementById("index-status").textContent.includes("검색 준비 완료"));
+  await page.locator(".index-cleanup summary").click();
+  await page.locator("#cleanup-preview").click();
+  await contains("#cleanup-status", "정리 가능한 이전 색인 1개");
+  assert.equal(await page.locator("#cleanup-execute").isDisabled(), true);
+  await page.locator("#cleanup-candidates input").check();
+  await page.locator("#cleanup-execute").click();
+  await contains("#cleanup-status", "삭제 완료 1개");
+  await page.locator("#cleanup-preview").click();
+  await contains("#cleanup-status", "정리할 이전 색인이 없습니다");
+  await page.locator("#search-submit").click();
+  await contains("#search-results", "전화번호");
+  await page.screenshot({ path: "data/review-browser/cleanup-desktop.png", fullPage: true });
+  // 생성은 테스트 Gateway로 검증한다. 검색·SQLite·HTTP·화면은 실제 구현을 사용한다.
+  await page.locator("#draft-name").fill("운영 인수인계 <script>test</script>");
+  await page.locator("#draft-query").fill("전화번호 확인");
+  await page.locator("#draft-create").click();
+  await contains("#draft-status", "완료·검토 필요");
+  await contains("#draft-result", "전화번호");
+  assert.equal(await page.locator("#draft-result script").count(), 0);
+  const evidenceImage = await page.locator("#draft-result a").first().getAttribute("href");
+  assert.equal((await page.request.get(base + evidenceImage)).status(), 200);
+  await page.reload();
+  await contains("#draft-status", "완료·검토 필요");
+  await contains("#draft-result", "운영 인수인계");
+  await page.screenshot({path: "data/review-browser/draft-desktop.png", fullPage: true});
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: "data/review-browser/mobile.png", fullPage: true });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  // 연결이 끊어져도 기존 목록을 유지하며 재시도 가능한 오류를 표시한다.
+  await page.route("**/api/v1/documents?*", (route) => route.abort());
+  await page.locator("#refresh").click();
+  await contains("#notice", "서버에 연결할 수 없거나");
+  // 새로고침의 상세 갱신과 공통 알림이 충돌하는지도 이 시나리오에서 검증한다.
+  await page.unroute("**/api/v1/documents?*");
+  assert.deepEqual(errors, []);
+  console.log("PASS: OCR/chunks, layout review, search, inactive-index cleanup/current protection, safe text, desktop/mobile");
+} finally { await browser.close(); }

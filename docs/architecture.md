@@ -31,7 +31,7 @@ flowchart TD
     Compare -->|차이 또는 근거 오류| Review[LLM D 설명 및 사람 검토]
     Analysis --> API[FastAPI v1]
     Review --> API
-    API --> UI[React 및 Vite]
+    API --> UI[문서 검토 웹 화면 / 향후 React 및 Vite]
 ```
 
 ## 계층과 의존 방향
@@ -44,11 +44,12 @@ API → Services → Domain
 
 | 계층 | 책임 | 현재 상태 |
 |---|---|---|
-| `api` | 버전 API, 요청 검증, 응답 변환 | Health·Architecture·점수 비교·문서 등록/조회 구현 |
-| `services` | 여러 도메인 규칙과 포트를 유스케이스로 조합 | 평가 비교·문서 등록 구현 |
+| `api` | 버전 API, 요청 검증, 응답 변환 | Health·Architecture·점수 비교·문서 등록/조회·OCR 실행/상태/결과 구현 |
+| `services` | 여러 도메인 규칙과 포트를 유스케이스로 조합 | 평가 비교·문서 등록·OCR 처리·페이지 구조/Chunk 생성 구현 |
 | `domain` | 표준 JSON Schema, 점수 및 업무 분석 규칙 | 핵심 계약 구현 |
 | `ports` | LLM·Repository·Vector Store 계약 | Protocol 구현 |
-| `adapters` | SQLite·Ollama·ChromaDB·OCR 실제 연동 | SQLite 문서 Repository·PDF 유효성 검사 구현 |
+| `adapters` | SQLite·Ollama·ChromaDB·OCR 실제 연동 | SQLite 문서/OCR/Chunk Repository·PDF 검사/렌더링·PaddleOCR 구현 |
+| `web` | 문서 입력 및 원문 검토 | HTML/CSS/JS 화면; OCR 검토·근거 준비/조회·원문 강조 |
 
 도메인과 서비스는 Ollama, ChromaDB, PaddleOCR의 응답 객체를 직접 참조하지 않는다.
 외부 결과는 어댑터가 표준 Schema로 변환한다.
@@ -70,7 +71,7 @@ SQLite
 └─ GenerationRun
 
 ChromaDB
-└─ Chunk Embedding + 검색용 Metadata 복제본
+└─ 실행별 Chunk ID + Embedding (원문·공개 여부는 SQLite에서 검증)
 ```
 
 문서 변경 또는 OCR 재실행 시 새로운 `ingestion_id`를 만든다.
@@ -101,9 +102,20 @@ Provider 호출 전후의 모델 ID, Prompt·Schema 버전, 검색 근거 ID, �
 ## 단계별 구현 순서
 
 1. [완료] SQLite 문서 Repository와 문서 등록 트랜잭션, 목록·상세 API를 구현한다.
-2. PyMuPDF·PaddleOCR 어댑터와 Good/Medium/Poor 스캔 Fixture를 연결한다.
-3. Chunk 생성 및 ChromaDB 색인 상태 전이를 구현한다.
-4. Ollama Gateway와 역할별 Prompt·Schema 재시도 정책을 구현한다.
+2. [구현] PyMuPDF·PaddleOCR 어댑터, 작업 상태/재처리 API와 합성 스캔 Fixture를 연결했다.
+   OCR 결과는 페이지·좌표·신뢰도와 함께 저장하며 Layout 분석은 후속 작업이다.
+3. [기본 구현] 페이지별 Section·Chunk·원문 근거 연결과 검토 화면을 구현했다.
+   페이지 fallback과 좌표 규칙 기반 Layout 분석을 별도 버전으로 제공한다.
+   제목/표/다단은 검토가 필요한 제안이며 셀 복원과 실제 문서 품질 평가는 후속이다.
+   ChromaDB 색인 상태 전이·구조별 검색·원문 이동도 구현했다. 상세는
+   [검색 색인](search-indexing.md)을 참고한다.
+4. [발췌 초안 구현] Ollama Gateway·JSON Schema·제한 재시도와 생성 이력을 연결했다.
+   원문 ID를 선택하여 본문을 서버에서 조립한다. 실모델 추론 검증과 다른 역할 확장은 후속이다.
 5. RAG 보고서 생성, 문제 생성, 답안 평가를 순서대로 연결한다.
 6. 준비도·추천 계산과 React UI를 추가한다.
+   문서 등록·OCR 원문 검토용 최소 화면은 먼저 구현했다. 전체 작성 UI는 후속 작업이다.
 7. 장애 주입, 모델 교체, 근거 추적 전체 흐름을 Golden Test로 검증한다.
+
+구조 버전은 `structure_run`과 `structure_section`으로 관리한다. 기존 원문 Block을
+덮어쓰지 않고 과거 근거를 보존한다. 상세 규칙은 [문서 구조](document-structure.md),
+후속 작업별 완료 기준은 [다음 작업 계획](next-steps.md)을 참고한다.

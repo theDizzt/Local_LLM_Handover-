@@ -10,12 +10,33 @@
 - LLM, Repository, Vector Store 교체를 위한 Protocol
 - SQLite 문서 구조·Chunk·실행 이력 Schema
 - PDF 등록·원본 저장·SHA-256 중복 확인·문서 목록/상세 API
+- PDF 페이지 렌더링·PaddleOCR 어댑터·OCR 작업 상태 및 결과/이미지 조회
+- 문서 등록·OCR 진행 상태·페이지별 원문 비교 웹 화면과 한국어 OCR 평가 도구
+- OCR 버전별 페이지 기본 구조·Chunk 생성, 원문 근거 조회 및 화면 강조
+- 규칙 기반 배치 분석: 제목·표 후보, 2단 읽기 순서 제안, 검토 사유 및 방식 비교
+- 페이지별 사람 검토 상태·메모·변경 이력 저장, 충돌 방지와 검색 결과 반영
+- OCR 평가 자료 내보내기와 수동 정답 대비 배치 분류·읽기 순서 평가 보고서
+- 로컬 한국어 임베딩·ChromaDB 색인/재구축, 구조 버전별 검색과 원문 근거 이동
+- 이전·실패 검색 색인 선택 정리, 현재/작업 중 색인 보호와 정리 실패 복구
+- Ollama 원문 발췌 초안 생성 API·화면, 근거 검증·검토 정책·생성 이력 저장
 - Python 점수 정규화, Label 비교, Hybrid Score 계산
 - 업무 영향도와 기술 적합도 계산
 
-OCR, Layout 분석, ChromaDB, Ollama 연동은 각 포트의 실제 어댑터로 다음
-단계에서 연결합니다. 상세 구조와 구현 순서는
+OCR과 검색은 선택 의존성을 설치해 실행합니다. 초안 생성은 별도 로컬 Ollama 서버와
+모델 설정이 필요하며, 실제 모델 추론 검증은 아직 남아 있습니다. 상세 구조와 구현 순서는
 [`docs/architecture.md`](docs/architecture.md)를 참고합니다.
+
+코드를 처음 읽을 때는 [코드 읽기 안내](docs/code-reading-guide.md)를,
+OCR 실행 방법은 [OCR 처리 설명](docs/ocr-processing.md)을 참고하세요.
+검토 화면 사용법과 한국어 품질 검증은 [문서 검토 안내](docs/ocr-review.md)에 정리했습니다.
+OCR 이후의 [근거 준비 기능](docs/document-structure.md)과
+[다음 작업 순서](docs/next-steps.md)도 참고하세요.
+정리 방식의 **배치 분석 (시험)**은 [배치 분석 안내](docs/layout-analysis.md)를 참고하세요.
+페이지별 완료·수정 필요 기록은 [검토 기록 안내](docs/layout-review.md)를 참고하세요.
+수동 정답으로 품질을 측정하는 방법은 [배치 분석 평가](docs/layout-evaluation.md)에 정리했습니다.
+검색 패키지·모델 준비와 API는 [검색 사용 안내](docs/search-indexing.md)에 정리했습니다.
+재구축 후 남은 검색 복제본은 [이전 색인 정리](docs/search-cleanup.md)를 참고하세요.
+초안 준비와 현재 검증 범위는 [원문 발췌 초안](docs/draft-generation.md)에 정리했습니다.
 
 ## 개발 환경 실행
 
@@ -43,6 +64,7 @@ uvicorn handover_ai.main:app --reload
 ```
 
 API 문서는 서버 실행 후 `http://127.0.0.1:8000/docs`에서 확인할 수 있습니다.
+문서 검토 화면은 `http://127.0.0.1:8000/`에서 열립니다. 별도 프론트엔드 설치는 필요 없습니다.
 
 ```powershell
 python -m pytest -q

@@ -6,6 +6,9 @@ from pydantic import BaseModel, Field
 
 
 class DocumentSummary(BaseModel):
+    # 화면에 공개하는 메타데이터다. 상태는 현재 연결된 ingestion의 처리 결과를 뜻한다.
+    # 최신 OCR 요청의 실행 상태는 별도 OcrJob에서 확인한다. 재처리 중에도 현재
+    # 문서는 이전 성공 버전을 유지할 수 있으므로 두 상태를 같은 것으로 보면 안 된다.
     document_id: str
     file_name: str
     page_count: int = Field(gt=0)
@@ -22,6 +25,7 @@ class StoredDocument(DocumentSummary):
 
 
 class DocumentRegistration(BaseModel):
+    # duplicate=True이면 새 문서를 만든 것이 아니라 같은 해시의 기존 문서를 반환했다.
     document: DocumentSummary
     duplicate: bool
 

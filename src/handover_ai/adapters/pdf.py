@@ -1,3 +1,6 @@
+# [읽기 안내] 등록 시 PDF의 형식·암호·페이지 수만 확인하는 어댑터다.
+# OCR 텍스트 추출이나 이미지 저장은 adapters/ocr.py가 맡는다.
+# 라이브러리 예외를 InvalidDocument로 바꿔 API가 PyMuPDF를 직접 알 필요가 없게 한다.
 from pathlib import Path
 
 import pymupdf
