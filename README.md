@@ -18,31 +18,27 @@
 - OCR 평가 자료 내보내기와 수동 정답 대비 배치 분류·읽기 순서 평가 보고서
 - 로컬 한국어 임베딩·ChromaDB 색인/재구축, 구조 버전별 검색과 원문 근거 이동
 - 이전·실패 검색 색인 선택 정리, 현재/작업 중 색인 보호와 정리 실패 복구
-- Ollama 원문 발췌 초안 생성 API·화면, 근거 검증·검토 정책·생성 이력 저장
+- 로컬 LLM(Qwen3-4B 직접 실행 또는 Ollama) 원문 발췌 초안 생성 API·화면, 근거 검증·검토 정책·생성 이력 저장
 - Python 점수 정규화, Label 비교, Hybrid Score 계산
 - 업무 영향도와 기술 적합도 계산
 
-OCR과 검색은 선택 의존성을 설치해 실행합니다. 초안은 다운로드한 Qwen3-4B를 직접
-실행하거나 별도 Ollama 서버를 사용할 수 있으며, Qwen 경로의 실제 추론을 검증했습니다. 상세 구조와 구현 순서는
-[`docs/architecture.md`](docs/architecture.md)를 참고합니다.
+OCR과 검색은 선택 의존성을 설치해 실행합니다. 초안은 다운로드한 공개 모델 Qwen3-4B를 직접
+실행하거나 별도 Ollama 서버를 사용할 수 있으며, Qwen 경로의 실제 추론을 검증했습니다.
+실제 PDF 8개·605페이지·40문항 예비 평가에서 문장 누락·무답 오선택·숫자 OCR 오류가 확인되어
+품질 보완이 진행 중입니다.
 
-현재 사용자가 해야 할 자료 준비·실행·검토 절차는 [사용자 작업 안내](docs/user-actions.md)에 모았습니다.
+## 문서
 
-실제 PDF 8개·605페이지와 40문항의 [예비 평가 결과](docs/real-evaluation-results-20261013.md)를
-기록했습니다. 문장 누락·무답 오선택·숫자 OCR 오류가 확인되어 품질 보완이 필요합니다.
-평가 재실행은 [실행 안내](docs/real-evaluation-running.md)를 참고하세요.
-
-코드를 처음 읽을 때는 [코드 읽기 안내](docs/code-reading-guide.md)를,
-OCR 실행 방법은 [OCR 처리 설명](docs/ocr-processing.md)을 참고하세요.
-검토 화면 사용법과 한국어 품질 검증은 [문서 검토 안내](docs/ocr-review.md)에 정리했습니다.
-OCR 이후의 [근거 준비 기능](docs/document-structure.md)과
-[다음 작업 순서](docs/next-steps.md)도 참고하세요.
-정리 방식의 **배치 분석 (시험)**은 [배치 분석 안내](docs/layout-analysis.md)를 참고하세요.
-페이지별 완료·수정 필요 기록은 [검토 기록 안내](docs/layout-review.md)를 참고하세요.
-수동 정답으로 품질을 측정하는 방법은 [배치 분석 평가](docs/layout-evaluation.md)에 정리했습니다.
-검색 패키지·모델 준비와 API는 [검색 사용 안내](docs/search-indexing.md)에 정리했습니다.
-재구축 후 남은 검색 복제본은 [이전 색인 정리](docs/search-cleanup.md)를 참고하세요.
-초안 준비와 현재 검증 범위는 [원문 발췌 초안](docs/draft-generation.md)에 정리했습니다.
+| 문서 | 내용 |
+|---|---|
+| [docs/README.md](docs/README.md) | 문서 안내(어떤 문서를 읽을지) |
+| [사용자 안내](docs/user-guide.md) | 실행·검토 절차, 평가 자료 준비 |
+| [로드맵](docs/roadmap.md) | 현재 위치와 다음 작업 |
+| [아키텍처](docs/architecture.md) | 계층·저장소·LLM 역할, 코드 읽기 안내 |
+| [문서 처리 파이프라인](docs/pipeline.md) | 등록·OCR·구조·배치 분석·검토 기록 |
+| [검색과 초안 생성](docs/search-and-draft.md) | 검색 색인·정리, LLM 초안, 모델 설정 |
+| [평가](docs/evaluation.md) | OCR·배치 분석·실제 문서 평가와 결과 |
+| [작업 기록](docs/work-log.md) | 날짜별 작업 내역 |
 
 ## 개발 환경 실행
 
@@ -98,13 +94,13 @@ curl.exe "http://127.0.0.1:8000/api/v1/documents/DOC-실제문서ID"
 - 등록 결과는 OCR 실행 전인 `pending` 상태입니다. 이번 단계에서는 페이지 수만
   검사하며 OCR 작업을 자동 실행하지 않습니다.
 
-등록 처리와 실패 복구의 설계 설명은 [문서 등록 구현](docs/document-registration.md)을 참고하세요.
+등록 처리와 실패 복구의 설계 설명은 [문서 처리 파이프라인 §1](docs/pipeline.md#1-문서-등록)을 참고하세요.
 
 ## 주요 경로
 
 다운로드한 `data/models/Qwen3-4B`는 `run-qwen.bat`으로 실행할 수 있습니다.
 CUDA GPU를 사용하며 모델 다운로드 없이 로컬 파일을 읽습니다. 설정과 실모델 검증은
-[초안 생성 안내](docs/draft-generation.md)를 참고하세요.
+[검색과 초안 생성](docs/search-and-draft.md)를 참고하세요.
 
 ```text
 src/handover_ai/
