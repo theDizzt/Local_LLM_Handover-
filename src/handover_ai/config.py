@@ -29,6 +29,7 @@ class Settings:
     ocr_recognition_model_dir: str | None = None
     embedding_model_path: Path = Path("data/models/multilingual-e5-small")
     llm_model: str = ""
+    llm_model_path: Path = Path("data/models/Qwen3-4B")
 
 
 def load_settings() -> Settings:
@@ -39,6 +40,7 @@ def load_settings() -> Settings:
         database_path=Path(getenv("DATABASE_PATH", "data/handover.db")),
         llm_provider=getenv("LLM_PROVIDER", "ollama"),
         llm_model=getenv("LLM_MODEL", ""),
+        llm_model_path=Path(getenv("LLM_MODEL_PATH", "data/models/Qwen3-4B")),
         llm_endpoint=getenv("LLM_ENDPOINT", "http://127.0.0.1:11434"),
         llm_timeout_seconds=int(getenv("LLM_TIMEOUT_SECONDS", "60")),
         vector_store=getenv("VECTOR_STORE", "chroma"),

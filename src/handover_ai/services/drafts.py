@@ -29,7 +29,13 @@ class DraftService:
         # 색인이 없으면 작업을 만들기 전에 안내한다. 생성 작업 안에서도 다시 조회한다.
         if not self.search.state(document_id, request.structure_id)["active"]:
             raise SearchConflict("선택한 정리 방식의 검색 색인을 먼저 준비해 주세요.")
-        return self.repository.enqueue(document_id, request, self.gateway.model_id)
+        return self.repository.enqueue(
+            document_id,
+            request,
+            self.gateway.model_id,
+            getattr(self.gateway, "provider", "ollama"),
+            getattr(self.gateway, "prompt_version", PROMPT_VERSION),
+        )
 
     async def generate(self, job):
         if not await asyncio.to_thread(self.repository.start, job):
@@ -89,6 +95,8 @@ class DraftService:
                         selection = await self.gateway.select(
                             request.query, prompt_blocks, retry=bool(attempt)
                         )
+                        if getattr(self.gateway, "last_source_guard", None) is not None:
+                            metadata["source_guard"] = self.gateway.last_source_guard
                         items = materialize(selection, sources)
                         break
                     except DraftFailure as exc:
@@ -96,7 +104,7 @@ class DraftService:
                             raise
             result = {
                 "schema_version": SCHEMA_VERSION,
-                "prompt_version": PROMPT_VERSION,
+                "prompt_version": getattr(self.gateway, "prompt_version", PROMPT_VERSION),
                 "title": request.title,
                 "status": "needs_review",
                 "items": items,
@@ -105,9 +113,18 @@ class DraftService:
                 ],
                 "notice": "원문 발췌형 초안입니다. 분류·순서·누락과 OCR 정확도를 검토해 주세요.",
             }
+            if guard := metadata.get("source_guard"):
+                result["source_guard"] = guard
+                if excluded := guard["excluded"]:
+                    result["notice"] += (
+                        f" 모델 제어 지시 문형에 해당하는 원문 {len(excluded)}개가 제외되었습니다."
+                        " 누락된 업무 내용이 있는지 원문을 확인해 주세요."
+                    )
             metadata["elapsed_ms"] = int((monotonic() - started) * 1000)
             await asyncio.to_thread(self.repository.finish, job, result, metadata)
         except Exception as exc:
+            if getattr(self.gateway, "last_source_guard", None) is not None:
+                metadata["source_guard"] = self.gateway.last_source_guard
             code = (
                 exc.code
                 if isinstance(exc, DraftFailure)

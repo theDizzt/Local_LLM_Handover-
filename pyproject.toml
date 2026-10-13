@@ -20,6 +20,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+local-llm = [
+    "psutil>=7.0,<8.0",
+    "transformers>=4.51,<6.0",
+    "torch>=2.6,<3.0",
+    "accelerate>=1.0,<2.0",
+]
 # 기본 서버 실행과 별개로 [dev], [ocr], [rag] 기능별 의존성을 선택 설치한다.
 dev = [
     "httpx>=0.28,<1.0",
