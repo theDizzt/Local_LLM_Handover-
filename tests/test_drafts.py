@@ -83,6 +83,25 @@ def test_draft_roundtrip_metadata_original_text_and_history(setup):
     assert client.get(f"/api/v1/documents/other/drafts/{draft_id}").status_code == 404
 
 
+def test_source_exclusion_is_preserved_in_result_and_generation_history(setup):
+    client, prefix, _, _, gateway, body = prepare(setup)
+    guard = {
+        "version": "explicit-control-v1",
+        "excluded": [{"block_id": "excluded-fixture", "reason": "forced_verdict"}],
+    }
+    gateway.last_source_guard = guard
+    client.post(prefix + "/drafts", json=body)
+    job = client.get(prefix + "/drafts").json()[0]
+    assert job["result"]["source_guard"] == guard
+    assert "원문 1개가 제외" in job["result"]["notice"]
+    with setup[4].connect() as connection:
+        row = connection.execute(
+            "SELECT metadata_json FROM generation_run WHERE generation_run_id=?",
+            (job["generation_run_id"],),
+        ).fetchone()
+    assert json.loads(row[0])["source_guard"] == guard
+
+
 @pytest.mark.parametrize("invalid,expected,calls", [(1, "ready", 2), (2, "failed", 2)])
 def test_unknown_grounding_retries_once_only(setup, invalid, expected, calls):
     client, prefix, _, _, gateway, body = prepare(setup)

@@ -12,6 +12,7 @@ const reviewNames = { unreviewed: "미검토", confirmed: "검토 완료", needs
 const draftCategories = {overview: "업무 개요", prerequisites: "사전 조건", procedure: "절차", cautions: "주의사항", troubleshooting: "문제 해결"};
 const draftErrors = {model_not_found: "설정한 Ollama 모델이 없습니다.", model_unavailable: "로컬 Ollama 연결을 확인해 주세요.",
   model_timeout: "모델 응답 시간이 초과됐습니다.", invalid_model_output: "모델 응답의 형식 또는 근거 ID를 확인할 수 없습니다.",
+  input_too_long: "모델 입력이 너무 깁니다. 검색 범위를 줄여 다시 생성해 주세요.",
   no_eligible_evidence: "조건에 맞는 근거가 없습니다. 검색어와 페이지 검토 상태를 확인해 주세요.",
   no_relevant_evidence: "모델이 관련된 원문을 선택하지 못했습니다. 검색어와 근거를 확인해 주세요.",
   source_changed: "생성 중 OCR 또는 근거 버전이 변경됐습니다.", review_changed: "생성 중 검토 기록이 변경됐습니다.",

@@ -12,6 +12,7 @@ from handover_ai.adapters.document_repository import SQLiteDocumentRepository
 from handover_ai.adapters.draft_repository import SQLiteDraftRepository
 from handover_ai.adapters.embedding import LocalE5Embedder
 from handover_ai.adapters.layout import GeometryLayoutAnalyzer
+from handover_ai.adapters.local_qwen import LocalQwenDraftGateway
 from handover_ai.adapters.ocr import PaddleOcrEngine, PyMuPdfRenderer
 from handover_ai.adapters.ocr_repository import SQLiteOcrRepository
 from handover_ai.adapters.ollama import OllamaDraftGateway
@@ -71,7 +72,11 @@ def get_draft_service(
     return DraftService(
         SQLiteDraftRepository(database),
         search,
-        OllamaDraftGateway(
+        LocalQwenDraftGateway(
+            settings.llm_model_path, settings.llm_timeout_seconds, settings.llm_adapter_path
+        )
+        if settings.llm_provider == "transformers"
+        else OllamaDraftGateway(
             settings.llm_endpoint,
             settings.llm_model,
             settings.llm_timeout_seconds,

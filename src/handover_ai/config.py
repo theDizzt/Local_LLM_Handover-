@@ -29,6 +29,9 @@ class Settings:
     ocr_recognition_model_dir: str | None = None
     embedding_model_path: Path = Path("data/models/multilingual-e5-small")
     llm_model: str = ""
+    llm_model_path: Path = Path("data/models/Qwen3-4B")
+    # 비어 있으면 기반 모델만 사용한다. 학습 파이프라인이 승격한 LoRA 폴더를 지정한다.
+    llm_adapter_path: Path | None = None
 
 
 def load_settings() -> Settings:
@@ -39,6 +42,8 @@ def load_settings() -> Settings:
         database_path=Path(getenv("DATABASE_PATH", "data/handover.db")),
         llm_provider=getenv("LLM_PROVIDER", "ollama"),
         llm_model=getenv("LLM_MODEL", ""),
+        llm_model_path=Path(getenv("LLM_MODEL_PATH", "data/models/Qwen3-4B")),
+        llm_adapter_path=Path(getenv("LLM_ADAPTER_PATH")) if getenv("LLM_ADAPTER_PATH") else None,
         llm_endpoint=getenv("LLM_ENDPOINT", "http://127.0.0.1:11434"),
         llm_timeout_seconds=int(getenv("LLM_TIMEOUT_SECONDS", "60")),
         vector_store=getenv("VECTOR_STORE", "chroma"),

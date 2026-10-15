@@ -23,7 +23,9 @@ class SQLiteDraftRepository:
         value["result"] = json.loads(encoded) if encoded else None
         return value
 
-    def enqueue(self, document_id, request, model_id):
+    def enqueue(
+        self, document_id, request, model_id, provider="ollama", prompt_version=PROMPT_VERSION
+    ):
         draft_id, run_id = "DRAFT-" + uuid4().hex, "GEN-" + uuid4().hex
         try:
             with self.database.connect() as connection:
@@ -32,8 +34,8 @@ class SQLiteDraftRepository:
                 connection.execute(
                     "INSERT INTO generation_run(generation_run_id,role,provider,model_id,"
                     "prompt_version,schema_version,status) "
-                    "VALUES (?,'excerpt_draft','ollama',?,?,?,'queued')",
-                    (run_id, model_id, PROMPT_VERSION, SCHEMA_VERSION),
+                    "VALUES (?,'excerpt_draft',?,?,?,?,'queued')",
+                    (run_id, provider, model_id, prompt_version, SCHEMA_VERSION),
                 )
                 connection.execute(
                     "INSERT INTO excerpt_draft(draft_id,generation_run_id,document_id,structure_id,"

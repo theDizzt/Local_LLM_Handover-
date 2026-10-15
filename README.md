@@ -22,9 +22,19 @@
 - Python 점수 정규화, Label 비교, Hybrid Score 계산
 - 업무 영향도와 기술 적합도 계산
 
-OCR과 검색은 선택 의존성을 설치해 실행합니다. 초안 생성은 별도 로컬 Ollama 서버와
-모델 설정이 필요하며, 실제 모델 추론 검증은 아직 남아 있습니다. 상세 구조와 구현 순서는
+OCR과 검색은 선택 의존성을 설치해 실행합니다. 초안은 다운로드한 Qwen3-4B를 직접
+실행하거나 별도 Ollama 서버를 사용할 수 있으며, Qwen 경로의 실제 추론을 검증했습니다. 상세 구조와 구현 순서는
 [`docs/architecture.md`](docs/architecture.md)를 참고합니다.
+
+현재 사용자가 해야 할 자료 준비·실행·검토 절차는 [사용자 작업 안내](docs/user-actions.md)에 모았습니다.
+
+정답 없는 업무 PDF를 `data/training-input/`에 넣고 `train.bat`을 실행하면 로컬 Qwen의
+LoRA 어댑터를 자동 학습·평가합니다. 기준 모델보다 나을 때만 적용 후보가 됩니다.
+[자동 학습 안내](docs/training-pipeline.md)를 참고하세요.
+
+실제 PDF 8개·605페이지와 40문항의 [예비 평가 결과](docs/real-evaluation-results-20261013.md)를
+기록했습니다. 문장 누락·무답 오선택·숫자 OCR 오류가 확인되어 품질 보완이 필요합니다.
+평가 재실행은 [실행 안내](docs/real-evaluation-running.md)를 참고하세요.
 
 코드를 처음 읽을 때는 [코드 읽기 안내](docs/code-reading-guide.md)를,
 OCR 실행 방법은 [OCR 처리 설명](docs/ocr-processing.md)을 참고하세요.
@@ -95,6 +105,10 @@ curl.exe "http://127.0.0.1:8000/api/v1/documents/DOC-실제문서ID"
 등록 처리와 실패 복구의 설계 설명은 [문서 등록 구현](docs/document-registration.md)을 참고하세요.
 
 ## 주요 경로
+
+다운로드한 `data/models/Qwen3-4B`는 `run-qwen.bat`으로 실행할 수 있습니다.
+CUDA GPU를 사용하며 모델 다운로드 없이 로컬 파일을 읽습니다. 설정과 실모델 검증은
+[초안 생성 안내](docs/draft-generation.md)를 참고하세요.
 
 ```text
 src/handover_ai/
