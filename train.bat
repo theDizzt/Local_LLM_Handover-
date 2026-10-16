@@ -1,6 +1,6 @@
 @echo off
 rem Train a LoRA adapter for the local Qwen model from unlabeled work PDFs.
-rem Put PDFs in data\training-input, then run this file. See docs\training-pipeline.md.
+rem Put PDFs in data\training-input, then run this file. See docs\training.md.
 rem
 rem   train.bat                  run when new PDFs exist (resumes an interrupted run)
 rem   train.bat --force          train again even without new PDFs

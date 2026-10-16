@@ -1,5 +1,5 @@
 # [읽기 안내] 모델을 실제로 실행하는 선택 통합 테스트다. 기본 테스트는 다운로드 없이
-# 실행되도록 건너뛴다. 실행 방법과 모델 캐시 설정은 docs/ocr-processing.md에 설명한다.
+# 실행되도록 건너뛴다. 실행 방법과 모델 캐시 설정은 docs/pipeline.md(PDF 렌더링 및 OCR)에 설명한다.
 import io
 import os
 

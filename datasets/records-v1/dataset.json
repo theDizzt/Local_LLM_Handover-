@@ -1,0 +1,735 @@
+{
+  "dataset_version": "records-v1",
+  "organization": "가상 한빛시청 기록관",
+  "department": "기록관리팀",
+  "review_status": "draft: 사용자 검토 전",
+  "skills": [
+    {"skill_id": "classification", "name": "기록 분류·기록관리기준표"},
+    {"skill_id": "appraisal", "name": "보존기간 책정·평가"},
+    {"skill_id": "conservation", "name": "보존처리(소독·복원)"},
+    {"skill_id": "disaster", "name": "재난 대응·응급복구"},
+    {"skill_id": "system", "name": "기록관리시스템(RMS·BRM·온나라)"},
+    {"skill_id": "disclosure", "name": "정보공개·열람 서비스"}
+  ],
+  "employees": [
+    {
+      "employee_id": "EMP-100",
+      "name": "정나래",
+      "role": "giver",
+      "position": "기록연구사(전보 예정)",
+      "skills": {"classification": 5, "appraisal": 5, "conservation": 4, "disaster": 4, "system": 4, "disclosure": 4},
+      "experience_months": 120,
+      "available_minutes": 0,
+      "previous_tasks": []
+    },
+    {
+      "employee_id": "EMP-001",
+      "name": "김가온",
+      "role": "receiver",
+      "position": "기록연구사(신규 임용)",
+      "skills": {"classification": 4, "appraisal": 4, "conservation": 1, "disaster": 2, "system": 3, "disclosure": 2},
+      "experience_months": 10,
+      "available_minutes": 2400,
+      "previous_tasks": []
+    },
+    {
+      "employee_id": "EMP-002",
+      "name": "이도윤",
+      "role": "receiver",
+      "position": "보존처리 담당 주무관",
+      "skills": {"classification": 2, "appraisal": 2, "conservation": 5, "disaster": 4, "system": 1, "disclosure": 1},
+      "experience_months": 48,
+      "available_minutes": 1200,
+      "previous_tasks": ["TASK-014", "TASK-015", "TASK-017"]
+    },
+    {
+      "employee_id": "EMP-003",
+      "name": "최하린",
+      "role": "receiver",
+      "position": "행정 주무관(시스템 담당)",
+      "skills": {"classification": 2, "appraisal": 1, "conservation": 1, "disaster": 3, "system": 5, "disclosure": 4},
+      "experience_months": 20,
+      "available_minutes": 1800,
+      "previous_tasks": ["TASK-005", "TASK-007"]
+    }
+  ],
+  "handovers": [
+    {
+      "handover_id": "HO-A",
+      "title": "기록물 분류·보존기간 관리 업무 인계",
+      "giver_id": "EMP-100",
+      "handover_date": "2026-10-30",
+      "reason": "인계자 전보(가상)",
+      "summary": "기록관리기준표, 보존기간 책정, 생산현황 보고, 정보공개 청구 대응 업무를 인계한다."
+    },
+    {
+      "handover_id": "HO-B",
+      "title": "서고 보존환경·소독 업무 인계",
+      "giver_id": "EMP-100",
+      "handover_date": "2026-10-30",
+      "reason": "인계자 전보(가상)",
+      "summary": "인수기록물 오염검사, 서고 유해생물 관리, 온·습도 점검, 소독 업무를 인계한다."
+    },
+    {
+      "handover_id": "HO-C",
+      "title": "종이기록물 복원처리 업무 인계",
+      "giver_id": "EMP-100",
+      "handover_date": "2026-10-30",
+      "reason": "인계자 전보(가상)",
+      "summary": "복원처리 대상 선정, 습식 세척 사전 시험, 복원 유형 결정과 이력 관리 업무를 인계한다."
+    },
+    {
+      "handover_id": "HO-D",
+      "title": "재난 대응·응급복구 업무 인계",
+      "giver_id": "EMP-100",
+      "handover_date": "2026-10-30",
+      "reason": "인계자 전보(가상)",
+      "summary": "재난 피해 보고, 침수·화재 기록물 응급복구, 작업공간과 냉동 보관처 확보 업무를 인계한다."
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "TASK-001",
+      "handover_id": "HO-A",
+      "title": "기록관리기준표 단위과제 신설·변경 반영",
+      "category": "분류",
+      "description": "처리과의 단위과제 신설·변경 요청을 검토하여 기능분류체계와 업무관리시스템에 반영한다.",
+      "cycle": "수시(분기 2~3건)",
+      "criticality": 80, "failure_impact": 70, "dependency_score": 85, "frequency": 40, "urgency": 50,
+      "expected_minutes": 240,
+      "reference_experience_months": 12,
+      "required_skills": {"classification": 4, "system": 3},
+      "procedure": [
+        "처리과의 단위과제 신설·변경 요청서를 접수하고 요청 사유를 확인한다.",
+        "정책분야, 정책영역, 대기능, 중기능, 소기능, 단위과제의 6단계 기능분류 위치를 검토한다.",
+        "보존기간, 공개여부, 접근권한 등 관리기준을 함께 검토한다.",
+        "정부기능분류시스템(BRM시스템)과 업무관리시스템(온나라시스템)에서 단위과제와 단위과제카드를 등록·종료·수정한다.",
+        "변경 내역을 처리과에 통보하고 기준표 변경 대장에 기록한다."
+      ],
+      "cautions": [
+        "이미 기록물이 등록된 단위과제는 삭제하지 않고 종료 처리한다(기관 내부 기준).",
+        "두 시스템의 반영 결과가 서로 같은지 반드시 대조한다."
+      ],
+      "troubleshooting": [
+        "시스템 간 단위과제 정보가 다르면 BRM시스템 기준으로 맞추고 차이 내역을 대장에 남긴다(기관 내부 기준)."
+      ],
+      "manual_references": [
+        {"document": "2021 대학기록물보존기간책정기준 가이드.pdf", "pdf_page": 10, "quote": "기관에서 수행하는 각 기능을 정책분야, 정책영역, 대기능, 중기능, 소기능, 단위과제의 6단계로 구성되는 분류체계"},
+        {"document": "국가기록원_중앙행정기관 단위과제정비 매뉴얼 재개정판_최종.pdf", "pdf_page": 3, "quote": "정부기능분류시스템(BRM시스템)과 업무관리시스템(온나라시스템)에서 단위과제 및 단위과제카드를 등록·종료·수정하는 절차를 상세히 기술하였다."}
+      ]
+    },
+    {
+      "task_id": "TASK-002",
+      "handover_id": "HO-A",
+      "title": "단위과제 보존기간 책정 검토",
+      "category": "평가",
+      "description": "신설·변경 단위과제의 보존기간이 법정 구분과 공통업무 준칙에 맞는지 검토한다.",
+      "cycle": "수시(TASK-001과 함께 수행)",
+      "criticality": 85, "failure_impact": 80, "dependency_score": 70, "frequency": 35, "urgency": 40,
+      "expected_minutes": 180,
+      "reference_experience_months": 18,
+      "required_skills": {"appraisal": 4, "classification": 3},
+      "procedure": [
+        "보존기간을 영구, 준영구, 30년, 10년, 5년, 3년, 1년 중에서 단위과제별로 부여한다.",
+        "기관공통업무에 해당하면 공공기관 공통업무 보존기간 준칙의 보존기간을 확인한다.",
+        "준칙보다 높게 책정하려면 책정 사유를 단위과제 관리기준에 기록한다.",
+        "검토 결과를 팀장 결재 후 처리과에 회신한다."
+      ],
+      "cautions": [
+        "준칙은 기관 판단에 따라 더 높게 책정할 수 있으나, 준칙보다 낮게 책정하는 요청은 팀장 검토 없이 반영하지 않는다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "처리과와 보존기간 의견이 다르면 기록물관리 심의 안건으로 상정한다(기관 내부 기준)."
+      ],
+      "manual_references": [
+        {"document": "2021 대학기록물보존기간책정기준 가이드.pdf", "pdf_page": 10, "quote": "보존기간은 영구, 준영구, 30년, 10년, 5년, 3년, 1년으로 구분(공공기록물법 시행령 별표1)하여 단위과제별로 부여"},
+        {"document": "붙임2.공공기관공통업무보존기간준칙(2024년).pdf", "pdf_page": 5, "quote": "또한 공공기관의 판단에 따라 준칙에서 제시하는 단위업무(단위과제)의 보존기간보다 더 높게 책정하여 운영할 수 있다."}
+      ]
+    },
+    {
+      "task_id": "TASK-003",
+      "handover_id": "HO-A",
+      "title": "단위과제 정비사업 운영",
+      "category": "분류",
+      "description": "기관 전체 단위과제를 주기적으로 분석하여 문제점을 고치는 정비사업을 운영한다.",
+      "cycle": "연 1회(상반기)",
+      "criticality": 70, "failure_impact": 60, "dependency_score": 65, "frequency": 10, "urgency": 30,
+      "expected_minutes": 200,
+      "reference_experience_months": 24,
+      "required_skills": {"classification": 4, "appraisal": 3, "system": 2},
+      "procedure": [
+        "사전준비 단계에서 정비 대상 처리과와 일정을 확정한다.",
+        "분석실시 단계에서 업무분석을 통해 문제점을 파악하고 개선안을 도출한다.",
+        "결과반영 단계에서 BRM시스템과 온나라시스템에 정비 결과를 반영한다.",
+        "후속조치 단계에서 처리과 교육과 반영 결과 점검을 수행한다."
+      ],
+      "cautions": [
+        "정비 결과 반영 전 처리과 담당자의 확인 서명을 받는다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "처리과 회신이 기한까지 오지 않으면 1회 독촉 후 기존 기준을 유지하고 다음 정비 대상으로 넘긴다(기관 내부 기준)."
+      ],
+      "manual_references": [
+        {"document": "국가기록원_중앙행정기관 단위과제정비 매뉴얼 재개정판_최종.pdf", "pdf_page": 3, "quote": "총 4단계(‘사전준비’, ‘분석실시’, ‘결과반영’, ‘후속조치’)로 구분된다."},
+        {"document": "국가기록원_중앙행정기관 단위과제정비 매뉴얼 재개정판_최종.pdf", "pdf_page": 3, "quote": "‘분석실시’ 단계는 업무분석을 통해 문제점을 파악하고 개선안을 도출하는 단계이다."}
+      ]
+    },
+    {
+      "task_id": "TASK-004",
+      "handover_id": "HO-A",
+      "title": "보존기간 책정 오류 점검",
+      "category": "평가",
+      "description": "기록관리기준표에서 보존기간이 잘못 책정된 단위과제를 찾아 정정한다.",
+      "cycle": "반기 1회",
+      "criticality": 75, "failure_impact": 70, "dependency_score": 50, "frequency": 20, "urgency": 30,
+      "expected_minutes": 120,
+      "reference_experience_months": 18,
+      "required_skills": {"appraisal": 4, "classification": 3},
+      "procedure": [
+        "기준표 전체를 내려받아 보존기간 책정기준과 대조한다.",
+        "보존기간 책정기준 대비 보존기간 과대·과소 책정 사례를 표시한다.",
+        "동일 단위과제에 상이한 보존기간이 책정된 사례를 표시한다.",
+        "정정 대상 목록을 처리과에 통보하고 정정 결과를 확인한다."
+      ],
+      "cautions": [
+        "이미 생산된 기록물의 보존기간 변경은 기록물 단위로 별도 검토한다(기관 내부 기준)."
+      ],
+      "troubleshooting": [],
+      "manual_references": [
+        {"document": "국가기록원_중앙행정기관 단위과제정비 매뉴얼 재개정판_최종.pdf", "pdf_page": 21, "quote": "⑥ 보존기간 책정기준 대비 보존기간 과대·과소 책정"},
+        {"document": "국가기록원_중앙행정기관 단위과제정비 매뉴얼 재개정판_최종.pdf", "pdf_page": 21, "quote": "⑦ 동일 단위과제에 상이한 보존기간 책정"}
+      ]
+    },
+    {
+      "task_id": "TASK-005",
+      "handover_id": "HO-A",
+      "title": "기록물 생산현황 취합·보고",
+      "category": "보고",
+      "description": "처리과별 기록물 생산현황을 기록관리시스템에서 취합하여 보고한다.",
+      "cycle": "연 1회",
+      "criticality": 65, "failure_impact": 55, "dependency_score": 60, "frequency": 10, "urgency": 60,
+      "expected_minutes": 150,
+      "reference_experience_months": 6,
+      "required_skills": {"system": 3, "classification": 2},
+      "procedure": [
+        "기록관리시스템(RMS)에서 처리과별 기록물 등록 목록을 추출한다(기관 내부 기준).",
+        "등록 누락이 의심되는 처리과에 확인을 요청한다.",
+        "생산현황 집계표를 작성하고 전년도와 비교한다.",
+        "기록관장 결재 후 보고하고 원본 집계표를 보관한다."
+      ],
+      "cautions": [
+        "추출 기준일을 집계표에 반드시 기재한다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "전년도 대비 30% 이상 증감한 처리과는 사유를 확인해 비고란에 적는다(기관 내부 기준)."
+      ],
+      "manual_references": []
+    },
+    {
+      "task_id": "TASK-006",
+      "handover_id": "HO-A",
+      "title": "사무인계인수 기록물 관리",
+      "category": "분류",
+      "description": "직원 전보·퇴직 시 작성한 사무인계인수서를 등록하고 보존기간에 맞게 관리한다.",
+      "cycle": "수시(인사 발령 시)",
+      "criticality": 55, "failure_impact": 40, "dependency_score": 30, "frequency": 30, "urgency": 35,
+      "expected_minutes": 60,
+      "reference_experience_months": 6,
+      "required_skills": {"classification": 2, "system": 2},
+      "procedure": [
+        "인사 발령 명단을 받아 사무인계인수서 제출 대상을 확인한다(기관 내부 기준).",
+        "제출된 사무인계인수서를 해당 단위과제로 등록한다.",
+        "사무인계인수 기록물의 보존기간을 5년으로 지정한다."
+      ],
+      "cautions": [
+        "인계인수서에 첨부된 업무자료는 원래 단위과제에도 등록되어 있는지 확인한다(기관 내부 기준)."
+      ],
+      "troubleshooting": [],
+      "manual_references": [
+        {"document": "붙임2.공공기관공통업무보존기간준칙(2024년).pdf", "pdf_page": 12, "quote": "사무인계인수 5년"}
+      ]
+    },
+    {
+      "task_id": "TASK-007",
+      "handover_id": "HO-A",
+      "title": "정보공개 청구 기록물 검색·제공",
+      "category": "서비스",
+      "description": "정보공개 청구가 들어온 기록물을 검색하고 공개 여부 검토를 지원하여 제공한다.",
+      "cycle": "주 2~3건",
+      "criticality": 70, "failure_impact": 75, "dependency_score": 40, "frequency": 70, "urgency": 85,
+      "expected_minutes": 480,
+      "reference_experience_months": 12,
+      "required_skills": {"disclosure": 4, "system": 3},
+      "procedure": [
+        "청구 내용을 접수하고 청구 대상 기록물의 생산 부서와 기간을 확인한다.",
+        "기록관리시스템에서 대상 기록물을 검색하고 목록을 만든다.",
+        "접수 후 3일 이내에 소관 부서에 공개 여부 협의를 요청한다(기관 내부 기준).",
+        "법정 처리기한 안에 공개 여부를 결정하여 청구인에게 통지하고 사본을 제공한다."
+      ],
+      "cautions": [
+        "개인정보가 포함된 부분은 공개 전에 가림 처리한다.",
+        "처리기한 계산은 접수일 기준으로 대장에 기록한다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "대상 기록물이 검색되지 않으면 이관 전 처리과 보관 여부를 확인한다(기관 내부 기준)."
+      ],
+      "manual_references": []
+    },
+    {
+      "task_id": "TASK-008",
+      "handover_id": "HO-B",
+      "title": "인수기록물 유해균 오염검사",
+      "category": "보존환경",
+      "description": "처리과에서 인수한 기록물을 서고에 넣기 전에 유해균 오염 여부를 검사한다.",
+      "cycle": "인수 시마다(월 2회 내외)",
+      "criticality": 85, "failure_impact": 85, "dependency_score": 75, "frequency": 50, "urgency": 70,
+      "expected_minutes": 240,
+      "reference_experience_months": 12,
+      "required_skills": {"conservation": 4},
+      "procedure": [
+        "인수기록물을 임시 보관 구역에 두고 서고 반입을 보류한다(기관 내부 기준).",
+        "표본 기록물에서 ATP 측정값을 확인한다.",
+        "검사 결과 기준치(1,000RLU) 이상인 경우 해당 기록물을 반출하여 화학소독을 실시한다.",
+        "기준치 미만이면 서고에 배치하고 검사 결과를 기록한다."
+      ],
+      "cautions": [
+        "검사 전 기록물은 다른 서고 기록물과 접촉하지 않게 분리한다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "측정값이 기준치 근처이면 다른 표본으로 재측정한다(기관 내부 기준)."
+      ],
+      "manual_references": [
+        {"document": "기록물 소독대상 선별 및 처리 매뉴얼.pdf", "pdf_page": 7, "quote": "검사 결과 기준치(1,000RLU) 이상인 경우 해당 기록물을 반출하여 화학소독을 실시한다."}
+      ]
+    },
+    {
+      "task_id": "TASK-009",
+      "handover_id": "HO-B",
+      "title": "서고 유해생물 종합관리(IPM)",
+      "category": "보존환경",
+      "description": "서고의 유해생물을 예방 중심으로 관리하는 IPM 5단계를 운영한다.",
+      "cycle": "상시(월 1회 점검)",
+      "criticality": 75, "failure_impact": 80, "dependency_score": 60, "frequency": 80, "urgency": 55,
+      "expected_minutes": 300,
+      "reference_experience_months": 12,
+      "required_skills": {"conservation": 3},
+      "procedure": [
+        "청소: 서고와 보존상자 주변의 먼지와 이물질을 정기적으로 제거한다.",
+        "침입통로 차단: 출입문, 배관, 환기구 틈을 점검하고 막는다.",
+        "조기발견 및 기록: 포충 트랩을 설치하고 포획 결과를 기록한다.",
+        "방제: 유해생물이 발견되면 소독 등 방제 조치를 한다.",
+        "안전한 공간으로 격납: 처리가 끝난 기록물을 안전한 서고에 배치한다."
+      ],
+      "cautions": [
+        "포충 트랩 위치도와 교체 일자를 서고별로 관리한다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "1등급 유해충이 포획되면 TASK-010 절차를 따른다."
+      ],
+      "manual_references": [
+        {"document": "기록물 소독대상 선별 및 처리 매뉴얼.pdf", "pdf_page": 4, "quote": "IPM 관리는 ①청소 ②침입통로 차단 ③조기발견 및 기록 ④방제 ⑤안전한 공간으로 격납 등 5단계로 제어함"}
+      ]
+    },
+    {
+      "task_id": "TASK-010",
+      "handover_id": "HO-B",
+      "title": "유해충 연속 포획 시 서고 소독 조치",
+      "category": "보존환경",
+      "description": "같은 서고에서 1등급 유해충이 연속 포획되면 서고 전체 소독을 진행한다.",
+      "cycle": "발생 시(연 0~1회)",
+      "criticality": 90, "failure_impact": 95, "dependency_score": 70, "frequency": 10, "urgency": 90,
+      "expected_minutes": 90,
+      "reference_experience_months": 24,
+      "required_skills": {"conservation": 5, "disaster": 2},
+      "procedure": [
+        "동일서고에서 1등급 유해충이 2회 연속 포획된 경우, 해당서고 기록물은 전량 저산소방식으로 소독한다.",
+        "소독 전 유해충에 오염된 기록물은 유해충의 확산 및 이동 제한을 위해 임시서고에 별도 배치한다.",
+        "서고 출입문에 해충 기피제를 분무한다.",
+        "소독 완료 후 재포획 여부를 확인하고 결과를 보고한다(기관 내부 기준)."
+      ],
+      "cautions": [
+        "저산소 소독 기간 동안 해당 서고 기록물의 열람을 중지한다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "임시서고 공간이 부족하면 HO-D의 응급복구 작업공간을 임시로 사용한다(기관 내부 기준)."
+      ],
+      "manual_references": [
+        {"document": "기록물 소독대상 선별 및 처리 매뉴얼.pdf", "pdf_page": 8, "quote": "동일서고에서 1등급 유해충이 2회 연속 포획된 경우, 해당서고 기록물은 전량 저산소방식으로 소독한다."},
+        {"document": "기록물 소독대상 선별 및 처리 매뉴얼.pdf", "pdf_page": 8, "quote": "소독 전 유해충에 오염된 기록물은 유해충의 확산 및 이동 제한을 위해 임시서고에 별도 배치한다."},
+        {"document": "기록물 소독대상 선별 및 처리 매뉴얼.pdf", "pdf_page": 8, "quote": "또한 서고 출입문에 해충 기피제를 분무한다."}
+      ]
+    },
+    {
+      "task_id": "TASK-011",
+      "handover_id": "HO-B",
+      "title": "서고 온·습도 점검 및 기록",
+      "category": "보존환경",
+      "description": "서고별 온·습도를 매일 점검하고 관리 범위를 벗어나면 조치한다.",
+      "cycle": "매일 2회",
+      "criticality": 70, "failure_impact": 75, "dependency_score": 50, "frequency": 95, "urgency": 60,
+      "expected_minutes": 300,
+      "reference_experience_months": 3,
+      "required_skills": {"conservation": 2, "system": 1},
+      "procedure": [
+        "오전 9시와 오후 4시에 서고별 온·습도계 값을 확인한다(기관 내부 기준).",
+        "측정값을 온·습도 관리대장에 기록한다.",
+        "관리 범위(온도 18~22℃, 상대습도 40~55%)를 벗어나면 공조 설비를 조정하고 팀장에게 보고한다(기관 내부 기준)."
+      ],
+      "cautions": [
+        "습도가 급격히 오르면 누수 여부를 먼저 확인한다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "누수로 기록물이 젖었으면 HO-D의 침수 기록물 응급복구(TASK-020)를 시작한다."
+      ],
+      "manual_references": []
+    },
+    {
+      "task_id": "TASK-012",
+      "handover_id": "HO-B",
+      "title": "소독대상 기록물 선별",
+      "category": "보존환경",
+      "description": "보존기간과 상태를 기준으로 소독처리할 기록물을 선별한다.",
+      "cycle": "분기 1회",
+      "criticality": 80, "failure_impact": 70, "dependency_score": 65, "frequency": 30, "urgency": 45,
+      "expected_minutes": 180,
+      "reference_experience_months": 18,
+      "required_skills": {"conservation": 4, "appraisal": 2},
+      "procedure": [
+        "보존기간이 30년 이상인 기록물을 우선 선별 대상으로 한다.",
+        "보존기간이 30년 미만인 기록물도 오염 흔적이 있으면 필요에 따라 선별한다.",
+        "선별 목록을 작성하여 소독 일정과 방식을 정한다(기관 내부 기준)."
+      ],
+      "cautions": [
+        "선별 사유를 기록물 단위로 남긴다(기관 내부 기준)."
+      ],
+      "troubleshooting": [],
+      "manual_references": [
+        {"document": "기록물 소독대상 선별 및 처리 매뉴얼.pdf", "pdf_page": 3, "quote": "보존기간이 30년 이상인 기록물 중 소독대상 선별 및 소독처리 업무에 적용한다."},
+        {"document": "기록물 소독대상 선별 및 처리 매뉴얼.pdf", "pdf_page": 3, "quote": "다만, 보존기간이 30년 미만인 기록물에 대해서도 필요에 따라 선별하여 소독처리를 실시할 수 있다."}
+      ]
+    },
+    {
+      "task_id": "TASK-013",
+      "handover_id": "HO-B",
+      "title": "소독 용역 계약·검수",
+      "category": "행정",
+      "description": "외부 소독 용역의 계약, 작업 입회, 결과 검수를 담당한다.",
+      "cycle": "연 1~2회",
+      "criticality": 60, "failure_impact": 55, "dependency_score": 40, "frequency": 10, "urgency": 35,
+      "expected_minutes": 120,
+      "reference_experience_months": 24,
+      "required_skills": {"conservation": 3, "system": 1},
+      "procedure": [
+        "선별 목록(TASK-012)을 근거로 과업지시서를 작성한다(기관 내부 기준).",
+        "계약 후 반출 기록물 목록과 수량을 업체와 함께 확인한다.",
+        "소독 완료 후 반입 수량과 상태를 검수하고 결과 보고서를 받는다."
+      ],
+      "cautions": [
+        "반출·반입 목록은 업체와 기관이 각각 서명한다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "반입 수량이 맞지 않으면 검수를 보류하고 업체에 즉시 확인을 요청한다(기관 내부 기준)."
+      ],
+      "manual_references": []
+    },
+    {
+      "task_id": "TASK-014",
+      "handover_id": "HO-C",
+      "title": "복원처리 대상 선정",
+      "category": "복원",
+      "description": "훼손 기록물 중 복원처리할 대상을 정하고 우선순위를 매긴다.",
+      "cycle": "반기 1회",
+      "criticality": 80, "failure_impact": 70, "dependency_score": 75, "frequency": 25, "urgency": 45,
+      "expected_minutes": 180,
+      "reference_experience_months": 24,
+      "required_skills": {"conservation": 4, "appraisal": 3},
+      "procedure": [
+        "서고 상태조사에서 훼손으로 표시된 기록물 목록을 모은다(기관 내부 기준).",
+        "기록물 훼손도에 따른 복원 시급성, 기록물의 가치, 활용도를 고려하여 대상을 선정한다.",
+        "선정 결과를 우선순위 순으로 정리해 복원 계획에 반영한다."
+      ],
+      "cautions": [
+        "열람 요청이 잦은 기록물은 활용도 항목에 요청 횟수를 근거로 적는다(기관 내부 기준)."
+      ],
+      "troubleshooting": [],
+      "manual_references": [
+        {"document": "종이기록물 복원처리 매뉴얼.pdf", "pdf_page": 5, "quote": "일반적으로 복원처리 대상은 기록물 훼손도에 따른 복원 시급성, 기록물의 가치, 활용도 등을 고려하여 선정한다."}
+      ]
+    },
+    {
+      "task_id": "TASK-015",
+      "handover_id": "HO-C",
+      "title": "습식 세척 전 필기류 안정성 시험",
+      "category": "복원",
+      "description": "습식 세척 전에 필기류가 물에 번지거나 녹는지 시험한다.",
+      "cycle": "세척 작업 시마다",
+      "criticality": 85, "failure_impact": 90, "dependency_score": 50, "frequency": 30, "urgency": 50,
+      "expected_minutes": 120,
+      "reference_experience_months": 36,
+      "required_skills": {"conservation": 5},
+      "procedure": [
+        "작고 뾰족한 붓 또는 얇은 면봉에 물을 적신다.",
+        "기록물 전체 중 대표 페이지와 필기류 중 비교적 중요도가 낮은 부분에 적용한다.",
+        "필기류가 옆으로 번지거나 묻어 나오는지 관찰한다.",
+        "변함이 없음을 확인한 후에만 습식 세척을 진행한다."
+      ],
+      "cautions": [
+        "습식 세척 작업은 필기류의 안정성 여부를 확인한 후 실시해야 한다.",
+        "시험 위치와 결과를 사진으로 남긴다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "번짐이 확인되면 습식 세척을 중단하고 건식 처리로 계획을 바꾼다(기관 내부 기준)."
+      ],
+      "manual_references": [
+        {"document": "종이기록물 복원처리 매뉴얼.pdf", "pdf_page": 7, "quote": "습식 세척 작업은 기록물에 쓰인 필기류가 물에 용해 또는 변형되는지에 대한 안정성 여부를 확인한 후 실시해야 한다."},
+        {"document": "종이기록물 복원처리 매뉴얼.pdf", "pdf_page": 7, "quote": "필기류의 안전성 여부는 작고 뾰족한 붓 또는 얇은 면봉 등에 물을 적셔 기록물 전체 중 대표 페이지와 필기류 중 비교적 중요도가 낮은 부분에 적용한다."},
+        {"document": "종이기록물 복원처리 매뉴얼.pdf", "pdf_page": 7, "quote": "필기류가 옆으로 번지거나 묻어 나오는지 여부를 관찰하여 변함이 없음을 확인 후에 습식 세척을 진행한다."}
+      ]
+    },
+    {
+      "task_id": "TASK-016",
+      "handover_id": "HO-C",
+      "title": "복원처리 유형 결정",
+      "category": "복원",
+      "description": "기록물 상태에 따라 심화복원, 예방복원, 응급복원 중 처리 유형을 결정한다.",
+      "cycle": "대상 선정 후(반기 1회)",
+      "criticality": 75, "failure_impact": 70, "dependency_score": 60, "frequency": 25, "urgency": 40,
+      "expected_minutes": 90,
+      "reference_experience_months": 36,
+      "required_skills": {"conservation": 5, "appraisal": 2},
+      "procedure": [
+        "최대한의 원형 유지와 최소한의 개입 원칙을 기준으로 처리 범위를 검토한다.",
+        "심화복원, 예방복원, 응급복원 세 가지 유형 중 하나를 정한다.",
+        "유형별 작업 계획과 예상 소요 기간을 작성한다(기관 내부 기준)."
+      ],
+      "cautions": [
+        "복원처리의 목적은 훼손 원인을 제거하고 강도를 회복시켜 기록물 수명을 연장하는 것이다."
+      ],
+      "troubleshooting": [],
+      "manual_references": [
+        {"document": "종이기록물 복원처리 매뉴얼.pdf", "pdf_page": 5, "quote": "최대한의 원형 유지와 최소한의 개입을 원칙으로 내·외부적인 훼손 원인을 제거하고 기록물의 강도를 회복시켜 궁극적으로는 기록물의 수명 연장을 목적으로 한다."},
+        {"document": "종이기록물 복원처리 매뉴얼.pdf", "pdf_page": 5, "quote": "차등 적용 방법으로 ①심화복원, ②예방복원, ③응급복원 세 가지 유형의 ‘아카이브형 복원처리 실무체계'가 있다."}
+      ]
+    },
+    {
+      "task_id": "TASK-017",
+      "handover_id": "HO-C",
+      "title": "복원처리 이력 기록",
+      "category": "복원",
+      "description": "복원처리 전후 상태와 사용 재료를 기록관리시스템에 기록한다.",
+      "cycle": "처리 완료 시마다",
+      "criticality": 60, "failure_impact": 50, "dependency_score": 55, "frequency": 40, "urgency": 25,
+      "expected_minutes": 150,
+      "reference_experience_months": 6,
+      "required_skills": {"conservation": 2, "system": 3},
+      "procedure": [
+        "처리 전후 사진과 상태 조사표를 정리한다(기관 내부 기준).",
+        "처리 유형, 사용 재료, 작업자, 작업 기간을 시스템에 입력한다(기관 내부 기준).",
+        "원본 기록물 정보와 처리 이력을 연결한다."
+      ],
+      "cautions": [
+        "사용 재료는 제품명과 제조 번호까지 기록한다(기관 내부 기준)."
+      ],
+      "troubleshooting": [],
+      "manual_references": []
+    },
+    {
+      "task_id": "TASK-018",
+      "handover_id": "HO-C",
+      "title": "보존상자·보존용품 관리",
+      "category": "행정",
+      "description": "보존상자와 복원 재료의 재고를 관리하고 보충한다.",
+      "cycle": "월 1회",
+      "criticality": 45, "failure_impact": 40, "dependency_score": 35, "frequency": 40, "urgency": 25,
+      "expected_minutes": 90,
+      "reference_experience_months": 3,
+      "required_skills": {"conservation": 2},
+      "procedure": [
+        "매월 말 보존상자와 복원 재료 재고를 확인한다(기관 내부 기준).",
+        "안전 재고 미만인 품목을 구매 요청한다(기관 내부 기준).",
+        "입고 시 규격과 수량을 검수한다."
+      ],
+      "cautions": [],
+      "troubleshooting": [],
+      "manual_references": []
+    },
+    {
+      "task_id": "TASK-019",
+      "handover_id": "HO-D",
+      "title": "재난 피해 확인 및 보고",
+      "category": "재난대응",
+      "description": "재난으로 기록물 피해가 발생하면 피해를 확인하고 관련 기관과 부서에 보고한다.",
+      "cycle": "재난 발생 시",
+      "criticality": 95, "failure_impact": 100, "dependency_score": 90, "frequency": 5, "urgency": 100,
+      "expected_minutes": 30,
+      "reference_experience_months": 12,
+      "required_skills": {"disaster": 4, "system": 1},
+      "procedure": [
+        "피해 서고와 피해 기록물의 범위를 확인한다.",
+        "피해 확인 후 관련 기관 또는 부서에 보고한다.",
+        "피해 기록물 목록과 사진을 남기고 응급복구 여부를 결정한다(기관 내부 기준)."
+      ],
+      "cautions": [
+        "작업자 안전이 확보되기 전에는 피해 구역에 들어가지 않는다(기관 내부 기준)."
+      ],
+      "troubleshooting": [
+        "담당자가 부재하면 비상연락망(TASK-024)의 다음 순번에게 보고 권한이 넘어간다(기관 내부 기준)."
+      ],
+      "manual_references": [
+        {"document": "(영문) 재난 피해 기록물 응급복구 가이드라인.pdf", "pdf_page": 3, "quote": "Report to relevant agency or department after confirm the damages"}
+      ]
+    },
+    {
+      "task_id": "TASK-020",
+      "handover_id": "HO-D",
+      "title": "침수 기록물 응급복구",
+      "category": "재난대응",
+      "description": "물에 젖은 종이기록물을 곰팡이가 생기기 전에 건조하거나 동결처리한다.",
+      "cycle": "재난 발생 시",
+      "criticality": 95, "failure_impact": 100, "dependency_score": 80, "frequency": 5, "urgency": 100,
+      "expected_minutes": 60,
+      "reference_experience_months": 24,
+      "required_skills": {"disaster": 5, "conservation": 4},
+      "procedure": [
+        "태풍, 홍수, 호우 등으로 인한 침수기록물을 응급복구 대상으로 분류한다.",
+        "48시간 안에 작업할 수 있는 수량을 판단한다.",
+        "48시간 안에 처리할 수 있으면 건조하고, 48시간 내 작업이 불가능하면 즉시 동결처리한다."
+      ],
+      "cautions": [
+        "48시간이 지나면 곰팡이 생장 가능성이 높아진다."
+      ],
+      "troubleshooting": [
+        "냉동 보관처가 부족하면 TASK-025의 협약 보관처에 연락한다."
+      ],
+      "manual_references": [
+        {"document": "재난 피해 종이기록물 응급복구 매뉴얼.pdf", "pdf_page": 3, "quote": "응급복구 대상은 태풍, 홍수, 호우 등으로 인한 침수기록물(물에 젖은 상태)과 화재, 폭발 등으로 인한 피해 기록물을 대상으로 한다."},
+        {"document": "재난 피해 종이기록물 응급복구 매뉴얼.pdf", "pdf_page": 7, "quote": "* 48시간이 지나면 곰팡이 생장 가능성이 높아짐"},
+        {"document": "재난 피해 종이기록물 응급복구 매뉴얼.pdf", "pdf_page": 8, "quote": "- 건조 또는 즉시 동결처리(48시간 내 작업 불가 시)"}
+      ]
+    },
+    {
+      "task_id": "TASK-021",
+      "handover_id": "HO-D",
+      "title": "화재 피해 기록물 운반",
+      "category": "재난대응",
+      "description": "화재로 약해진 종이기록물을 손상 없이 작업공간으로 옮긴다.",
+      "cycle": "재난 발생 시",
+      "criticality": 90, "failure_impact": 95, "dependency_score": 70, "frequency": 5, "urgency": 95,
+      "expected_minutes": 30,
+      "reference_experience_months": 24,
+      "required_skills": {"disaster": 4, "conservation": 3},
+      "procedure": [
+        "플라스틱 상자 등 운반 도구를 준비한다.",
+        "기록물을 무리해서 펼쳐보거나 세게 누르지 않고 운반 도구에 담는다.",
+        "낱장기록물은 순서가 바뀌지 않도록 담아 옮긴다."
+      ],
+      "cautions": [
+        "화재 피해 기록물은 열과 수분의 영향으로 단순히 젖은 기록물보다 강도가 매우 취약하다."
+      ],
+      "troubleshooting": [],
+      "manual_references": [
+        {"document": "재난 피해 종이기록물 응급복구 매뉴얼.pdf", "pdf_page": 6, "quote": "특히, 화재 피해 기록물은 열과 수분의 영향으로 단순히 젖은 기록물보다 강도가 매우 취약해진 상태이므로 운반 시 기록물 보호를 위해 운반 도구(플라스틱 상자 등)를 사용한다."},
+        {"document": "재난 피해 종이기록물 응급복구 매뉴얼.pdf", "pdf_page": 6, "quote": "이때, 기록물을 무리해서 펼쳐보거나 세게 누르는 등 물리적 힘을 가하지 않으며, 낱장기록물은 순서가 바뀌지 않도록 주의한다."}
+      ]
+    },
+    {
+      "task_id": "TASK-022",
+      "handover_id": "HO-D",
+      "title": "응급복구 작업공간 확보",
+      "category": "재난대응",
+      "description": "피해 기록물을 옮겨 응급복구할 대피공간을 확보한다.",
+      "cycle": "재난 발생 시",
+      "criticality": 85, "failure_impact": 85, "dependency_score": 85, "frequency": 5, "urgency": 90,
+      "expected_minutes": 30,
+      "reference_experience_months": 12,
+      "required_skills": {"disaster": 4},
+      "procedure": [
+        "공기 순환이 잘되는 대피공간을 정한다.",
+        "가능하면 온·습도 조절이 가능한 곳을 고른다.",
+        "화재 피해 기록물을 다룰 때는 실내 환기가 가능한 공간에서 응급복구를 실시한다."
+      ],
+      "cautions": [
+        "화재 피해 기록물에는 유해가스 등이 잔류할 수 있어 작업자 안전을 우선한다."
+      ],
+      "troubleshooting": [
+        "평소 지정한 대피공간을 쓸 수 없으면 3층 대회의실을 예비 공간으로 사용한다(기관 내부 기준)."
+      ],
+      "manual_references": [
+        {"document": "재난 피해 종이기록물 응급복구 매뉴얼.pdf", "pdf_page": 5, "quote": "대피공간의 내부는 공기 순환이 잘되어야 하며 온·습도 조절이 가능한 곳이라면 더욱 좋다."},
+        {"document": "재난 피해 종이기록물 응급복구 매뉴얼.pdf", "pdf_page": 5, "quote": "특히, 화재 피해 기록물에 유해가스 등이 잔류하고 있어 작업자의 안전을 위해 실내 환기 가능한 공간에서 응급복구를 실시해야 한다."}
+      ]
+    },
+    {
+      "task_id": "TASK-023",
+      "handover_id": "HO-D",
+      "title": "플라스틱 파일에 든 젖은 기록물 처리",
+      "category": "재난대응",
+      "description": "플라스틱 파일에 보관된 기록물이 젖었을 때 찢어지지 않게 처리한다.",
+      "cycle": "재난 발생 시",
+      "criticality": 70, "failure_impact": 75, "dependency_score": 40, "frequency": 5, "urgency": 85,
+      "expected_minutes": 30,
+      "reference_experience_months": 12,
+      "required_skills": {"disaster": 3, "conservation": 3},
+      "procedure": [
+        "환기를 위해 플라스틱 부분을 분리한다.",
+        "플라스틱 파일이 젖어 달라붙었으면 억지로 떼지 않는다.",
+        "분리하지 못한 기록물은 동결처리 대상으로 분류한다(기관 내부 기준)."
+      ],
+      "cautions": [
+        "젖은 플라스틱 파일을 무리하게 제거하면 기록물이 찢어질 수 있다."
+      ],
+      "troubleshooting": [],
+      "manual_references": [
+        {"document": "(영문) 재난 피해 기록물 응급복구 가이드라인.pdf", "pdf_page": 7, "quote": "separate the plastic parts for ventilation"},
+        {"document": "(영문) 재난 피해 기록물 응급복구 가이드라인.pdf", "pdf_page": 7, "quote": "If wet, do not remove the plastic file forcefully to avoid tearing"}
+      ]
+    },
+    {
+      "task_id": "TASK-024",
+      "handover_id": "HO-D",
+      "title": "재난 대비 비상연락망·모의훈련",
+      "category": "재난대응",
+      "description": "기록물 재난 비상연락망을 최신으로 유지하고 연 1회 모의훈련을 실시한다.",
+      "cycle": "연락망 분기 1회 갱신, 훈련 연 1회",
+      "criticality": 75, "failure_impact": 80, "dependency_score": 80, "frequency": 10, "urgency": 40,
+      "expected_minutes": 120,
+      "reference_experience_months": 6,
+      "required_skills": {"disaster": 3, "system": 2},
+      "procedure": [
+        "분기마다 비상연락망의 연락처와 순번을 확인한다(기관 내부 기준).",
+        "연 1회 침수 상황을 가정한 모의훈련 계획을 세운다(기관 내부 기준).",
+        "훈련 결과와 개선 사항을 기록하고 연락망에 반영한다."
+      ],
+      "cautions": [
+        "인사 발령이 있으면 분기를 기다리지 않고 즉시 연락망을 고친다(기관 내부 기준)."
+      ],
+      "troubleshooting": [],
+      "manual_references": []
+    },
+    {
+      "task_id": "TASK-025",
+      "handover_id": "HO-D",
+      "title": "응급 냉동 보관처 확보·관리",
+      "category": "재난대응",
+      "description": "48시간 안에 복구하지 못한 젖은 기록물을 임시로 냉동 보관할 장소를 확보해 둔다.",
+      "cycle": "협약 연 1회 갱신",
+      "criticality": 80, "failure_impact": 90, "dependency_score": 75, "frequency": 5, "urgency": 60,
+      "expected_minutes": 60,
+      "reference_experience_months": 12,
+      "required_skills": {"disaster": 3, "conservation": 2},
+      "procedure": [
+        "영하 20℃에서 영하 30℃로 임시 보관할 수 있는 냉동 시설을 확인한다.",
+        "인근 냉동 창고와 연 1회 이용 협약을 갱신한다(기관 내부 기준).",
+        "협약처 연락처와 수용 가능 수량을 비상연락망에 함께 기록한다(기관 내부 기준)."
+      ],
+      "cautions": [
+        "48시간이 지나면 곰팡이가 생길 수 있으므로 냉동 이송 결정을 늦추지 않는다."
+      ],
+      "troubleshooting": [],
+      "manual_references": [
+        {"document": "(영문) 재난 피해 기록물 응급복구 가이드라인.pdf", "pdf_page": 4, "quote": "Mold may grow after 48 hours"},
+        {"document": "(영문) 재난 피해 기록물 응급복구 가이드라인.pdf", "pdf_page": 4, "quote": "Store the records in a fridge (-20℃ to -30℃) temporary"}
+      ]
+    }
+  ]
+}

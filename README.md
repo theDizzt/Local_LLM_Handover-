@@ -23,30 +23,27 @@
 - 업무 영향도와 기술 적합도 계산
 
 OCR과 검색은 선택 의존성을 설치해 실행합니다. 초안은 다운로드한 Qwen3-4B를 직접
-실행하거나 별도 Ollama 서버를 사용할 수 있으며, Qwen 경로의 실제 추론을 검증했습니다. 상세 구조와 구현 순서는
-[`docs/architecture.md`](docs/architecture.md)를 참고합니다.
-
-현재 사용자가 해야 할 자료 준비·실행·검토 절차는 [사용자 작업 안내](docs/user-actions.md)에 모았습니다.
-
+실행하거나 별도 Ollama 서버를 사용할 수 있으며, Qwen 경로의 실제 추론을 검증했습니다.
 정답 없는 업무 PDF를 `data/training-input/`에 넣고 `train.bat`을 실행하면 로컬 Qwen의
-LoRA 어댑터를 자동 학습·평가합니다. 기준 모델보다 나을 때만 적용 후보가 됩니다.
-[자동 학습 안내](docs/training-pipeline.md)를 참고하세요.
+LoRA 어댑터를 자동 학습·평가하며, 기준 모델보다 나을 때만 적용 후보가 됩니다.
 
-실제 PDF 8개·605페이지와 40문항의 [예비 평가 결과](docs/real-evaluation-results-20261013.md)를
-기록했습니다. 문장 누락·무답 오선택·숫자 OCR 오류가 확인되어 품질 보완이 필요합니다.
-평가 재실행은 [실행 안내](docs/real-evaluation-running.md)를 참고하세요.
+## 문서
 
-코드를 처음 읽을 때는 [코드 읽기 안내](docs/code-reading-guide.md)를,
-OCR 실행 방법은 [OCR 처리 설명](docs/ocr-processing.md)을 참고하세요.
-검토 화면 사용법과 한국어 품질 검증은 [문서 검토 안내](docs/ocr-review.md)에 정리했습니다.
-OCR 이후의 [근거 준비 기능](docs/document-structure.md)과
-[다음 작업 순서](docs/next-steps.md)도 참고하세요.
-정리 방식의 **배치 분석 (시험)**은 [배치 분석 안내](docs/layout-analysis.md)를 참고하세요.
-페이지별 완료·수정 필요 기록은 [검토 기록 안내](docs/layout-review.md)를 참고하세요.
-수동 정답으로 품질을 측정하는 방법은 [배치 분석 평가](docs/layout-evaluation.md)에 정리했습니다.
-검색 패키지·모델 준비와 API는 [검색 사용 안내](docs/search-indexing.md)에 정리했습니다.
-재구축 후 남은 검색 복제본은 [이전 색인 정리](docs/search-cleanup.md)를 참고하세요.
-초안 준비와 현재 검증 범위는 [원문 발췌 초안](docs/draft-generation.md)에 정리했습니다.
+목적에 맞는 문서 하나만 열면 되도록 주제별로 묶었습니다.
+
+| 이런 때 | 문서 |
+|---|---|
+| 프로그램 실행, 자료 준비, 사용자가 할 일 | [사용자 안내](docs/user-guide.md) |
+| 지금 어디까지 왔고 다음에 무엇을 할지 | [로드맵](docs/roadmap.md) |
+| 전체 구조·계층 책임, 코드 읽는 순서 | [아키텍처](docs/architecture.md) |
+| 문서 등록·OCR·검토 화면·구조/Chunk·배치 분석·검토 기록 | [문서 처리 파이프라인](docs/pipeline.md) |
+| 검색 색인·이전 색인 정리·원문 발췌 초안 | [검색과 초안 생성](docs/search-and-draft.md) |
+| 실제 문서 평가 준비·실행·결과, 배치 분석 평가, 가상 업무 데이터 | [평가와 평가 데이터](docs/evaluation.md) |
+| LoRA 자동 학습 사용법과 학습 결과 | [로컬 모델 학습](docs/training.md) |
+| 날짜별로 한 일 | [작업 기록](docs/work-log.md) |
+| 최초·수정 개발 계획서, UI/UX 계획서 | [docs/plan/](docs/plan/develop.md) |
+
+`docs/plan/`의 계획서는 기획 문서라 구현 결과와 다를 수 있습니다. 실제 동작은 위 문서가 기준입니다.
 
 ## 개발 환경 실행
 
@@ -102,13 +99,13 @@ curl.exe "http://127.0.0.1:8000/api/v1/documents/DOC-실제문서ID"
 - 등록 결과는 OCR 실행 전인 `pending` 상태입니다. 이번 단계에서는 페이지 수만
   검사하며 OCR 작업을 자동 실행하지 않습니다.
 
-등록 처리와 실패 복구의 설계 설명은 [문서 등록 구현](docs/document-registration.md)을 참고하세요.
+등록 처리와 실패 복구의 설계 설명은 [문서 등록 구현](docs/pipeline.md#문서-등록-구현)을 참고하세요.
 
 ## 주요 경로
 
 다운로드한 `data/models/Qwen3-4B`는 `run-qwen.bat`으로 실행할 수 있습니다.
 CUDA GPU를 사용하며 모델 다운로드 없이 로컬 파일을 읽습니다. 설정과 실모델 검증은
-[초안 생성 안내](docs/draft-generation.md)를 참고하세요.
+[초안 생성 안내](docs/search-and-draft.md#로컬-모델-원문-발췌-초안)를 참고하세요.
 
 ```text
 src/handover_ai/

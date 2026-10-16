@@ -55,7 +55,7 @@ where = ["src"]
 
 # wheel 설치에서도 검토 화면을 사용할 수 있도록 정적 자산을 패키지에 포함한다.
 [tool.setuptools.package-data]
-handover_ai = ["web/*.html", "web/*.css", "web/*.js"]
+handover_ai = ["web/*.html", "web/*.css", "web/*.js", "web/font/*"]
 
 [tool.pytest.ini_options]
 # src 레이아웃을 테스트에서 import할 수 있도록 경로를 추가한다.
