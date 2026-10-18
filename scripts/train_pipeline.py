@@ -564,6 +564,7 @@ def question_seconds(folder):
 
 def stage_eval(args, run, log):
     from handover_ai.adapters.local_qwen import LocalQwenDraftGateway
+    from handover_ai.domain.excerpts import VERSION as JOIN_VERSION
 
     adapter = run / "adapter"
     regression = run / "eval" / "regression.json"
@@ -585,7 +586,7 @@ def stage_eval(args, run, log):
     if args.skip_real_eval:
         log("[eval] 실제 문서 평가 생략 (--skip-real-eval). 게이트는 통과할 수 없습니다.")
         return
-    baseline = args.work / f"eval-baseline-{LocalQwenDraftGateway.prompt_version}"
+    baseline = args.work / f"eval-baseline-{LocalQwenDraftGateway.prompt_version}-{JOIN_VERSION}"
     log(f"[eval] 기준 모델 실제 문서 평가: {baseline.name} (최초 1회만 실행)")
     real_evaluation(baseline, None, args.eval_source, log)
     log("[eval] 어댑터 실제 문서 평가")
@@ -594,9 +595,10 @@ def stage_eval(args, run, log):
 
 def stage_gate(args, run, log):
     from handover_ai.adapters.local_qwen import LocalQwenDraftGateway
+    from handover_ai.domain.excerpts import VERSION as JOIN_VERSION
     from handover_ai.training.gate import judge
 
-    baseline = args.work / f"eval-baseline-{LocalQwenDraftGateway.prompt_version}"
+    baseline = args.work / f"eval-baseline-{LocalQwenDraftGateway.prompt_version}-{JOIN_VERSION}"
     candidate = run / "eval" / "real"
     exit_code = load(run / "eval" / "regression-exit.json", {"returncode": 1})["returncode"]
     if not (candidate / "summary.json").exists() or not (baseline / "summary.json").exists():

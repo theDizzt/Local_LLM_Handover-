@@ -32,12 +32,15 @@ function renderDraft(job) {
   panel.append(title, note, missing);
   for (const item of job.result.items) {
     const article = document.createElement("article"), heading = document.createElement("strong"), text = document.createElement("p"), link = document.createElement("a"), review = document.createElement("p");
-    heading.textContent = draftCategories[item.category]; text.textContent = item.block.text;
+    heading.textContent = draftCategories[item.category]; text.textContent = item.excerpt ? item.excerpt.text : item.block.text;
     link.textContent = `${item.evidence.pdf_page_number}페이지 원문 이미지 열기 ↗`;
     link.href = `/api/v1/documents/${encodeURIComponent(job.document_id)}/pages/${encodeURIComponent(item.page_id)}/image`;
     link.target = "_blank"; link.rel = "noopener";
     review.className = "muted small";
     review.textContent = `생성 당시 ${item.human_review ? reviewNames[item.human_review.status] : "사람 검토 기록 없음"} · OCR 신뢰도 ${(item.block.confidence * 100).toFixed(1)}%`;
+    // 모델이 고른 줄에 문장이 끝나지 않아 같은 페이지의 앞뒤 줄을 이어 붙인 경우를 알린다.
+    const added = item.excerpt ? item.excerpt.added_block_ids.length : 0;
+    if (added) review.textContent += ` · 잘린 문장을 잇기 위해 앞뒤 ${added}줄 추가`;
     if (item.review_reasons.length) review.textContent += " · " + item.review_reasons.map(key => layoutWarnings[key] || key).join(" ");
     article.append(heading, text, link, review); panel.append(article);
   }

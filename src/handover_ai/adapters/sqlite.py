@@ -225,6 +225,7 @@ CREATE TABLE IF NOT EXISTS employee (
     skills_json TEXT NOT NULL DEFAULT '{}',
     experience_months INTEGER CHECK (experience_months >= 0),
     available_minutes INTEGER CHECK (available_minutes >= 0),
+    role TEXT NOT NULL DEFAULT 'receiver' CHECK (role IN ('giver', 'receiver')),
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -238,6 +239,7 @@ CREATE TABLE IF NOT EXISTS task (
     urgency REAL CHECK (urgency BETWEEN 0 AND 100),
     required_skills_json TEXT NOT NULL DEFAULT '{}',
     expected_minutes INTEGER CHECK (expected_minutes > 0),
+    reference_experience_months INTEGER CHECK (reference_experience_months >= 0),
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -346,6 +348,25 @@ CREATE TABLE IF NOT EXISTS layout_page (
 """
 
 
+# CREATE TABLE IF NOT EXISTS는 기존 DB에 열을 추가하지 않는다. 나중에 추가한 열은 여기서 보완한다.
+ADDED_COLUMNS = {
+    "employee": {
+        "role": "TEXT NOT NULL DEFAULT 'receiver' CHECK (role IN ('giver', 'receiver'))",
+    },
+    "task": {
+        "reference_experience_months": "INTEGER CHECK (reference_experience_months >= 0)",
+    },
+}
+
+
+def _add_missing_columns(connection: sqlite3.Connection) -> None:
+    for table, columns in ADDED_COLUMNS.items():
+        existing = {row[1] for row in connection.execute(f"PRAGMA table_info({table})")}
+        for name, definition in columns.items():
+            if name not in existing:
+                connection.execute(f"ALTER TABLE {table} ADD COLUMN {name} {definition}")
+
+
 class SQLiteDatabase:
     def __init__(self, database_path: Path):
         # 경로만 저장한다. 객체 생성 자체는 디스크에 DB를 만들거나 연결하지 않는다.
@@ -356,6 +377,7 @@ class SQLiteDatabase:
         self.database_path.parent.mkdir(parents=True, exist_ok=True)
         with self.connect() as connection:
             connection.executescript(SCHEMA_SQL)
+            _add_missing_columns(connection)
             connection.execute(
                 "INSERT OR IGNORE INTO schema_version(version) VALUES (?)",
                 (SCHEMA_VERSION,),

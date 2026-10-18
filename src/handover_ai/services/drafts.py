@@ -1,4 +1,4 @@
-"""검색 → 검토 정책 → 모델의 원문 선택 → 근거 재검증 → 초안 저장을 조정한다."""
+"""검색 → 검토 정책 → 모델의 원문 선택 → 근거 재검증 → 문장 잇기 → 초안 저장을 조정한다."""
 
 import asyncio
 from time import monotonic
@@ -12,6 +12,7 @@ from handover_ai.domain.drafts import (
     DraftRequest,
     materialize,
 )
+from handover_ai.domain.excerpts import join_sentences
 from handover_ai.domain.search import SearchConflict, SearchRequest, SearchUnavailable
 
 
@@ -104,6 +105,13 @@ class DraftService:
                     except DraftFailure as exc:
                         if exc.code != "invalid_model_output" or attempt == 1:
                             raise
+            # 모델은 OCR 줄 하나만 고를 수 있어 문장이 잘린다. 저장된 같은 페이지 줄로 잇는다.
+            pages = await asyncio.to_thread(
+                self.search.page_blocks,
+                request.structure_id,
+                sorted({item["page_id"] for item in items}),
+            )
+            items = join_sentences(items, pages)
             result = {
                 "schema_version": SCHEMA_VERSION,
                 "prompt_version": getattr(self.gateway, "prompt_version", PROMPT_VERSION),

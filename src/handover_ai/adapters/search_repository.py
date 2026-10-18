@@ -153,6 +153,32 @@ class SQLiteSearchRepository:
                 "active": self.active(connection, structure_id, version),
             }
 
+    def page_blocks(self, structure_id, page_ids):
+        """구조 버전에 속한 페이지별 전체 Block. 초안의 문장 잇기가 이웃 줄을 찾는 데 쓴다."""
+        result = {page_id: [] for page_id in page_ids}
+        with self.database.connect() as connection:
+            for page_id in result:
+                rows = connection.execute(
+                    "SELECT b.* FROM structure_section ss "
+                    "JOIN chunk c ON c.section_id=ss.section_id "
+                    "JOIN chunk_source cs ON cs.chunk_id=c.chunk_id "
+                    "JOIN document_block b ON b.block_id=cs.block_id "
+                    "WHERE ss.structure_id=? AND ss.page_id=? "
+                    "ORDER BY c.chunk_order, cs.source_order",
+                    (structure_id, page_id),
+                ).fetchall()
+                result[page_id] = [
+                    {
+                        "text": row["text"],
+                        "bbox": json.loads(row["bbox_json"]),
+                        "confidence": row["ocr_confidence"],
+                        "block_id": row["block_id"],
+                        "reading_order": row["reading_order"],
+                    }
+                    for row in rows
+                ]
+        return result
+
     def resolve(self, run, matches):
         with self.database.connect() as connection:
             # 읽기 트랜잭션의 한 스냅샷에서 현재 OCR, 공개 포인터, 근거를 검증한다.

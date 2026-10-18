@@ -7,7 +7,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from handover_ai.domain.search import SearchRequest
 
 PROMPT_VERSION = "excerpt-draft-v1"
-SCHEMA_VERSION = "excerpt-1.0"
+# 1.1: 항목에 문장 단위 발췌(excerpt)를 추가했다. block은 모델이 고른 첫 줄로 유지한다.
+SCHEMA_VERSION = "excerpt-1.1"
 Category = Literal["overview", "prerequisites", "procedure", "cautions", "troubleshooting"]
 CATEGORIES = ("overview", "prerequisites", "procedure", "cautions", "troubleshooting")
 

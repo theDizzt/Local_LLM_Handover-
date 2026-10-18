@@ -247,7 +247,11 @@ def run_document(
         asyncio.run(generator.generate(job))
         generated = drafts.get(document_id, job["draft_id"])
         selected = ordered_page_texts(
-            [item["block"] for item in (generated["result"] or {}).get("items", [])],
+            [
+                block
+                for item in (generated["result"] or {}).get("items", [])
+                for block in item.get("excerpt", {}).get("blocks", [item["block"]])
+            ],
             block_pages,
         )
         with database.connect() as connection:

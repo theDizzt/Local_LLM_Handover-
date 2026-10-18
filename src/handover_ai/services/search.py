@@ -38,6 +38,9 @@ class SearchService:
                 "version_changed" if isinstance(exc, SearchConflict) else "index_failed",
             )
 
+    def page_blocks(self, structure_id, page_ids):
+        return self.repository.page_blocks(structure_id, page_ids)
+
     def search(self, document_id, request):
         run = self.state(document_id, request.structure_id)["active"]
         if not run:

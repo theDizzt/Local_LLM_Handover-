@@ -24,6 +24,7 @@ from handover_ai.api.routes import (
     layout_review,
     ocr,
     search,
+    workforce,
 )
 from handover_ai.config import Settings
 
@@ -64,6 +65,7 @@ def create_app(
     application.include_router(layout_review.router, prefix="/api/v1")
     application.include_router(search.router, prefix="/api/v1")
     application.include_router(drafts.router, prefix="/api/v1")
+    application.include_router(workforce.router, prefix="/api/v1")
     # 첫 검토 화면은 별도 Node 서버 없이 기존 실행 명령 하나로 제공한다.
     # 정적 파일만 /static에 공개한다. PDF·DB·모델 캐시가 있는 data는 노출하지 않는다.
     # __file__ 기준 경로는 실행 디렉터리가 달라도 설치된 패키지에서 파일을 찾는다.
