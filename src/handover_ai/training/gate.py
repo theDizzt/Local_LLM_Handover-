@@ -14,6 +14,23 @@ def p95(values):
     return ordered[min(len(ordered) - 1, round(0.95 * (len(ordered) - 1)))]
 
 
+def off_gold_page(summary):
+    """발췌는 했지만 모두 정답 페이지 밖인 유답 문항 수.
+
+    같은 사실이 다른 페이지에 반복되면 유효한 근거도 포함될 수 있어 오답 판정은 아니다.
+    다만 첫 어댑터에서 6→9로 늘며 틀린 발췌가 함께 늘었으므로 증가 자체를 막는다.
+    """
+    count = 0
+    for document in summary["documents"]:
+        for question in document["questions"]:
+            if question.get("answerable") is not True:
+                continue
+            gold = {evidence["pdf_page"] for evidence in question["evidence"]}
+            pages = {item["page"] for item in question.get("selected_items", [])}
+            count += bool(pages) and not pages & gold
+    return count
+
+
 def judge(baseline, candidate, regression_passed, baseline_seconds, candidate_seconds):
     """두 summary.json과 회귀 결과로 게이트 항목별 통과 여부를 계산한다."""
     base, cand = baseline["outcomes"], candidate["outcomes"]
@@ -65,6 +82,13 @@ def judge(baseline, candidate, regression_passed, baseline_seconds, candidate_se
             "baseline": selected(baseline),
             "candidate": selected(candidate),
             "passed": selected(candidate) >= selected(baseline),
+        },
+        {
+            "name": "off_gold_page",
+            "rule": "정답 페이지 밖에서만 발췌한 유답 질문 증가 금지",
+            "baseline": off_gold_page(baseline),
+            "candidate": off_gold_page(candidate),
+            "passed": off_gold_page(candidate) <= off_gold_page(baseline),
         },
         {
             "name": "improvement",

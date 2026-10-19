@@ -122,8 +122,21 @@ def test_balance_keeps_every_group():
     assert sum(r["task"] == "select" for r in chosen) == 3
 
 
-def summary(missed, selected, false_answer=1, errors=5):
+def summary(missed, selected, false_answer=1, errors=5, off_page=0):
+    # 정답 2쪽 문항 off_page개가 3쪽만 발췌했다. 무답 문항과 발췌 없는 문항은 세지 않는다.
+    questions = [
+        {"answerable": True, "evidence": [{"pdf_page": 2}], "selected_items": [{"page": 3}]}
+    ] * off_page + [
+        {
+            "answerable": True,
+            "evidence": [{"pdf_page": 2}],
+            "selected_items": [{"page": 2}, {"page": 3}],
+        },
+        {"answerable": True, "evidence": [{"pdf_page": 2}], "selected_items": []},
+        {"answerable": False, "evidence": [], "selected_items": [{"page": 3}]},
+    ]
     return {
+        "documents": [{"questions": questions}],
         "completed_questions": 40,
         "outcomes": {
             "missed_answer": missed,
@@ -142,6 +155,12 @@ def test_gate_requires_improvement_without_regression():
     assert not judge(base, summary(9, 5, false_answer=2), True, seconds, seconds)["passed"]
     assert not judge(base, summary(9, 5), False, seconds, seconds)["passed"]
     assert not judge(base, summary(9, 5), True, seconds, [20.0] * 40)["passed"]
+    result = judge(summary(12, 2, off_page=6), summary(9, 5, off_page=9), True, seconds, seconds)
+    check = next(c for c in result["checks"] if c["name"] == "off_gold_page")
+    assert (check["baseline"], check["candidate"], result["passed"]) == (6, 9, False)
+    assert judge(summary(12, 2, off_page=6), summary(9, 5, off_page=6), True, seconds, seconds)[
+        "passed"
+    ]
 
 
 def test_adapter_requires_matching_prompt_version(tmp_path):
