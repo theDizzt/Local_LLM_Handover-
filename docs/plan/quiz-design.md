@@ -103,6 +103,18 @@ class QuestionGateway(Protocol):
 - 형식 오류 시 1회 재시도, 이후 `invalid_model_output`. 시간 초과는 기존 설정을 따른다.
 - 생성 실행은 `generation_run`에 프롬프트·가드·검색 버전, 모델 ID, 어댑터, 입력 Block ID와 해시를 남긴다.
 
+## 학습 파이프라인과의 호환 조건
+
+학습(`train_pipeline.py`)은 입력 PDF 해시, 학습 설정, 초안 프롬프트 버전
+(`LocalQwenDraftGateway.prompt_version`)으로 결과 재사용과 어댑터 호환을 판단한다. 문제 생성은
+이 값을 바꾸지 않도록 다음을 지킨다.
+
+- `qwen_worker.py`의 `selection_messages`·`relevance_messages`와 초안 `prompt_version`은 수정하지 않는다.
+  문제 생성 프롬프트는 별도 함수·별도 버전(`quiz-gen-v1`)으로 둔다.
+- 문제 생성은 어댑터 없이 기준 모델로 실행하고 사용한 모델 ID를 생성 이력에 남긴다. 현재 어댑터는
+  원문 선택용으로만 학습되어 문제 생성 품질이 검증되지 않았다.
+- 문제 생성용 학습은 별도 과제·평가를 학습 파이프라인에 추가하는 후속 작업이다.
+
 ## 저장 구조
 
 기존 `question`·`evaluation` 테이블을 쓰고, 없는 열만 앱 시작 시 추가한다(업무 분석과 같은 방식).
