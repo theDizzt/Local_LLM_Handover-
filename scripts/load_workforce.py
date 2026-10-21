@@ -1,5 +1,7 @@
 r"""가상 업무·직원 정답 데이터를 앱 SQLite DB에 넣는다. 다시 실행하면 같은 ID를 갱신한다.
 
+매뉴얼 파일명으로 이미 등록된 문서를 찾아 업무와 연결한다(task_document).
+
 사용: .venv\Scripts\python.exe scripts\load_workforce.py [--dataset ...] [--database ...]
 """
 
@@ -29,9 +31,17 @@ def main(argv=None):
     dataset = SyntheticDataset.model_validate(json.loads(args.dataset.read_text(encoding="utf-8")))
     database = SQLiteDatabase(args.database)
     database.initialize()
-    counts = SQLiteWorkforceRepository(database).import_dataset(dataset)
+    repository = SQLiteWorkforceRepository(database)
+    counts = repository.import_dataset(dataset)
+    links = repository.link_documents(dataset)
     print(f"{args.database}: 업무 {counts['tasks']}개, 직원 {counts['employees']}명 저장")
-    return counts
+    print(f"업무-문서 새 연결 {links['linked_documents']}건")
+    if links["unmatched_documents"]:
+        # 문항 생성은 연결된 문서에서만 근거를 찾는다. 등록 후 다시 실행하면 연결된다.
+        print(f"아직 등록되지 않은 매뉴얼 {len(links['unmatched_documents'])}개:")
+        for name in links["unmatched_documents"]:
+            print(f"  - {name}")
+    return {**counts, **links}
 
 
 if __name__ == "__main__":

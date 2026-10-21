@@ -157,6 +157,37 @@ class InvalidAnswer(ValueError):
     """형식이 맞지 않는 답안. 0점이 아니라 제출 거부로 처리한다."""
 
 
+# ── 검토 ──────────────────────────────────────────────────────────────
+
+ReviewAction = Literal["approve", "reject", "retire"]
+# 확정 문항은 고치지 않는다. 내용을 바꾸려면 새 문항을 만들고 이전 문항을 retired로 둔다.
+# 이미 제출된 답안이 어떤 문항 기준으로 채점됐는지 보존하기 위해서다.
+TRANSITIONS = {
+    ("draft", "approve"): "approved",
+    ("draft", "reject"): "rejected",
+    ("approved", "retire"): "retired",
+}
+
+
+class QuestionConflict(ValueError):
+    """다른 검토가 먼저 저장되었거나 현재 상태에서 할 수 없는 검토."""
+
+
+class InvalidReview(ValueError):
+    """검토 필수 항목을 확인하지 않은 승인 등 요청 자체가 규칙에 맞지 않음."""
+
+
+def review_status(question: Question, action: ReviewAction, confirmed_fields: list[str]) -> Status:
+    target = TRANSITIONS.get((question.status, action))
+    if target is None:
+        raise QuestionConflict(f"{question.status} 상태의 문항에는 {action}을(를) 할 수 없습니다.")
+    missing = set(question.review_required_fields) - set(confirmed_fields)
+    if action == "approve" and missing:
+        # 객관식 오답 보기는 원문에 없는 문장이라 사람이 확인해야만 승인한다.
+        raise InvalidReview(f"검토 필수 항목을 확인해 주세요: {', '.join(sorted(missing))}")
+    return target
+
+
 def score_answer(question: Question, answer) -> Score:
     if question.kind == "short_answer":
         if not isinstance(answer, str):

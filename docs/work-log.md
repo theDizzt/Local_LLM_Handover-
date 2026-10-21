@@ -1,5 +1,16 @@
 # 날짜별 작업 기록
 
+## 2026년 10월 21일 — 문제 생성 2단계: 문항 저장소와 업무-문서 연결
+
+- `question` 테이블에 검토 상태·보기·검토 필수 항목·Guard 결과·revision·검토자 열 추가.
+  기존 DB는 앱 시작 시 없는 열만 추가하고 기존 행은 `draft`가 된다.
+- `adapters/question_repository.py`: 문항 저장(실제 Block만 허용, 문서·OCR 버전·페이지·본문 해시 기록,
+  같은 ID 재저장 시 검토 상태 보존), revision 기반 검토(draft→approved/rejected, approved→retired),
+  객관식 오답 보기 확인 없는 승인 거부, approved 문항에만 답안 저장, 문항별 최신 답안 조회.
+- `load_workforce.py`가 매뉴얼 파일명으로 `task_document`를 채움. 실제 문서 평가 DB 복사본에서
+  업무 18개·연결 20건 확인. 앱 DB(`data/handover.db`)에는 아직 매뉴얼이 등록되지 않아 0건.
+- 테스트 226개 통과(실모델 4개 건너뜀, 신규 7개), Ruff 통과.
+
 ## 2026년 10월 20일 — 문제 생성 설계와 1단계(도메인 규칙) 구현
 
 - [문제 생성·QuizScore 설계안](plan/quiz-design.md) 작성. 모델은 제안하고 Python이 원문과 대조하는

@@ -121,11 +121,12 @@ class QuestionGateway(Protocol):
 
 | 테이블 | 추가 열 | 용도 |
 |---|---|---|
-| `question` | `status` (`draft`/`approved`/`rejected`/`retired`), `generation_run_id`, `guard_json`, `accepted_answers_json`, `reviewed_by`, `reviewed_at`, `review_note` | 검토 상태와 근거 검증 결과 |
-| `evaluation` | 없음 (`python_score`, `python_score_mode`, `status` 활용) | 답안과 채점 |
-| `task_document` | 없음 (현재 비어 있음) | 업무 ↔ 문서 연결. `load_workforce.py`가 `manual_references`의 파일명으로 등록된 문서를 찾아 채운다 |
+| `question` | `status` (`draft`/`approved`/`rejected`/`retired`), `options_json`, `review_required_json`, `guard_json`, `generation_run_id`, `revision`, `reviewed_by`, `reviewed_at`, `review_note`. 동의 표현은 기존 `answer_json`에 둔다 | 검토 상태와 근거 검증 결과 |
+| `evaluation` | 없음 (`answer`에 JSON, `python_score`는 100점 환산, `python_score_mode`, `status='scored'`) | 답안과 채점 |
+| `task_document` | 없음 | 업무 ↔ 문서 연결. `load_workforce.py`가 `manual_references` 파일명(NFC 정규화)으로 등록된 문서를 찾아 채우고, 없는 문서는 이름을 출력한다 |
 
-- `evidence_json`에는 Block ID와 함께 `document_id`, `ingestion_id`, `structure_id`, 원문 해시를 저장한다.
+- `evidence_json`에는 Block ID와 함께 `document_id`, `ingestion_id`, 페이지 번호, 원문 해시를 저장한다.
+  SQLite에 없는 Block은 저장을 거부한다.
   OCR 재처리 후에도 과거 문항의 근거를 그대로 추적한다.
 - 확정 문항을 고칠 때는 덮어쓰지 않고 새 `question_id`로 만들고 이전 문항은 `retired`로 둔다.
   이미 제출된 답안이 어떤 문항 기준으로 채점됐는지 보존하기 위해서다.

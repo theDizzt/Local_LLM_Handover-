@@ -168,8 +168,11 @@ def test_loader_is_idempotent_and_migrates_old_tables(tmp_path):
             "skills_json TEXT NOT NULL DEFAULT '{}', experience_months INTEGER, "
             "available_minutes INTEGER, created_at TEXT);"
         )
-    assert loader.main(["--database", str(path)]) == {"tasks": 25, "employees": 4}
-    assert loader.main(["--database", str(path)]) == {"tasks": 25, "employees": 4}
+    for _ in range(2):
+        counts = loader.main(["--database", str(path)])
+        assert (counts["tasks"], counts["employees"], counts["linked_documents"]) == (25, 4, 0)
+        # 문서를 등록하지 않은 DB이므로 매뉴얼은 모두 미연결로 보고된다.
+        assert counts["unmatched_documents"]
     with SQLiteDatabase(path).connect() as connection:
         assert connection.execute("SELECT count(*) FROM task").fetchone()[0] == 25
         assert (

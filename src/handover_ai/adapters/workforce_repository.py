@@ -1,6 +1,7 @@
 """[읽기 안내] 업무·직원 정답 데이터를 SQLite task/employee 테이블에 저장하고 읽는다."""
 
 import json
+import unicodedata
 
 from handover_ai.adapters.sqlite import SQLiteDatabase
 from handover_ai.domain.assignment import EmployeeInput, TaskInput
@@ -66,6 +67,45 @@ class SQLiteWorkforceRepository:
                     ),
                 )
         return {"tasks": len(dataset.tasks), "employees": len(dataset.employees)}
+
+    def link_documents(self, dataset: SyntheticDataset) -> dict:
+        """manual_references의 파일명으로 등록된 문서를 찾아 task_document에 연결한다.
+
+        문항 생성은 업무에 연결된 문서 안에서만 근거를 찾는다. 아직 등록하지 않은 문서는
+        건너뛰고 이름을 돌려준다. 등록 후 다시 실행하면 연결된다. 기존 연결은 지우지 않는다.
+        """
+
+        def key(name):
+            # Windows·macOS에서 한글 파일명의 유니코드 조합 방식이 달라도 같은 파일로 본다.
+            return unicodedata.normalize("NFC", name).strip()
+
+        with self.database.connect() as connection:
+            # 같은 파일의 새 버전이 있으면 최신 버전에 연결한다.
+            rows = connection.execute(
+                "SELECT document_id, file_name FROM document ORDER BY document_version"
+            ).fetchall()
+            documents = {key(row["file_name"]): row["document_id"] for row in rows}
+            linked, unmatched = 0, set()
+            for task in dataset.tasks:
+                for reference in task.manual_references:
+                    document_id = documents.get(key(reference.document))
+                    if document_id is None:
+                        unmatched.add(reference.document)
+                        continue
+                    cursor = connection.execute(
+                        "INSERT OR IGNORE INTO task_document(task_id, document_id) VALUES (?, ?)",
+                        (task.task_id, document_id),
+                    )
+                    linked += cursor.rowcount
+        return {"linked_documents": linked, "unmatched_documents": sorted(unmatched)}
+
+    def task_documents(self, task_id: str) -> list[str]:
+        with self.database.connect() as connection:
+            rows = connection.execute(
+                "SELECT document_id FROM task_document WHERE task_id=? ORDER BY document_id",
+                (task_id,),
+            ).fetchall()
+        return [row["document_id"] for row in rows]
 
     def tasks(self) -> list[TaskInput]:
         with self.database.connect() as connection:

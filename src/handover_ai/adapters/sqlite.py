@@ -260,6 +260,17 @@ CREATE TABLE IF NOT EXISTS question (
     max_score REAL NOT NULL CHECK (max_score > 0),
     evidence_json TEXT NOT NULL,
     rubric_version TEXT NOT NULL,
+    -- quiz-v1: 검토 상태와 원문 대조 결과. approved 문항만 출제·QuizScore에 쓴다.
+    status TEXT NOT NULL DEFAULT 'draft'
+        CHECK (status IN ('draft', 'approved', 'rejected', 'retired')),
+    options_json TEXT NOT NULL DEFAULT '[]',
+    review_required_json TEXT NOT NULL DEFAULT '[]',
+    guard_json TEXT NOT NULL DEFAULT '{}',
+    generation_run_id TEXT,
+    revision INTEGER NOT NULL DEFAULT 1 CHECK (revision >= 1),
+    reviewed_by TEXT,
+    reviewed_at TEXT,
+    review_note TEXT,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -355,6 +366,18 @@ ADDED_COLUMNS = {
     },
     "task": {
         "reference_experience_months": "INTEGER CHECK (reference_experience_months >= 0)",
+    },
+    "question": {
+        "status": "TEXT NOT NULL DEFAULT 'draft' "
+        "CHECK (status IN ('draft', 'approved', 'rejected', 'retired'))",
+        "options_json": "TEXT NOT NULL DEFAULT '[]'",
+        "review_required_json": "TEXT NOT NULL DEFAULT '[]'",
+        "guard_json": "TEXT NOT NULL DEFAULT '{}'",
+        "generation_run_id": "TEXT",
+        "revision": "INTEGER NOT NULL DEFAULT 1 CHECK (revision >= 1)",
+        "reviewed_by": "TEXT",
+        "reviewed_at": "TEXT",
+        "review_note": "TEXT",
     },
 }
 
